@@ -76,7 +76,7 @@ public class BatchBuilder extends Builder {
     // the files that need to be sent before executing the job
     private String filesToSend = "";
     // how often the status of the job should be checked
-    private int checkFrequencyMinutes = 1;
+    private float checkFrequencyMinutes = 1;
     // names of the files that have been uploaded (separated by commas)
     private String uploadedFiles = getUploadedFiles();
     // configuration for checking if email should be sent
@@ -99,7 +99,7 @@ public class BatchBuilder extends Builder {
     @DataBoundConstructor
     public BatchBuilder(String job, String filesToDownload,
             String downloadDestination, String filesToSend,
-            int checkFrequencyMinutes, boolean sendEmail) {
+            float checkFrequencyMinutes, boolean sendEmail) {
         this.job = job;
         this.filesToDownload = filesToDownload;
         this.downloadDestination = downloadDestination;
@@ -117,7 +117,7 @@ public class BatchBuilder extends Builder {
         return filesToDownload;
     }
 
-    public int getCheckFrequencyMinutes() {
+    public float getCheckFrequencyMinutes() {
         return checkFrequencyMinutes;
     }
 
@@ -186,7 +186,7 @@ public class BatchBuilder extends Builder {
             // loops for checking the job's status and progress until 
             // it reaches an ending state
             while (!batchSystem.isEndStatus(jobStatus)) {
-                Thread.sleep(checkFrequencyMinutes * 60000);
+                Thread.sleep((long) (checkFrequencyMinutes * 60000));
                 jobStatus = batchSystem.getJobStatus(jobId);
                 listener.getLogger().println("JOB STATUS: " + jobStatus);
                 batchSystem.processStatus(jobStatus);
