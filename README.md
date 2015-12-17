@@ -16,7 +16,7 @@ The job owner can select whether SGE should send an email when the job finishes.
 
 But it really does run with SGE and we are serious about using it in production with our company's Grid Engine compute farm.
 
-In the future I hope to integrate `sge-cloud-plugin` with `lsf-cloud-plugin` to create a single plugin supports both LSF and SGE.
+In the future I hope to integrate `sge-cloud-plugin` with `lsf-cloud-plugin` to create a single plugin supports LSF, SGE and other similar systems like Condor.
  
 # Installation
 
