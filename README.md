@@ -1,13 +1,5 @@
 This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.
 
-# Project Status
-
-`sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.  The immediate goal is to just prove the feasibility of submitting SGE jobs from Jenkins.  At this point, only minimal functional changes to make it function with SGE have been implemented.  As you see below, the GUI labels still say "LSF", not "SGE".  Even the name of the plugin is still `lsf-cloud`.
-
-But it really does run with SGE and we are very serious about using it in production use at our company.
-
-In the future I hope to merge `sge-cloud-plugin` back into `lsf-cloud-plugin` so that this single plugin supports both LSF and SGE.
- 
 # Features
 
 This plugin adds a new type of build step *Run job on LSF* that submits batch jobs to SGE. The build step monitors the job status and periodically (default one minute) appends the progress to the build's *Console Output*. Should the build fail, errors and the exit status of the job also appear. If the job is terminated in Jenkins, it is also terminated in SGE.
@@ -18,6 +10,14 @@ Files can be uploaded and sent to SGE before the execution of the job and downlo
 
 The job owner can select whether SGE should send an email when the job finishes.
 
+# Project Status
+
+`sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.  The immediate goal is to prove the feasibility of submitting SGE jobs from Jenkins.  At this point, only the functional changes required to make it function with SGE have been implemented.  As you see below, the GUI labels still say "LSF", not "SGE".  Even the name of the plugin is still `lsf-cloud`.
+
+But it really does run with SGE and we are serious about using it in production with our company's Grid Engine compute farm.
+
+In the future I hope to integrate `sge-cloud-plugin` with `lsf-cloud-plugin` to create a single plugin supports both LSF and SGE.
+ 
 # Installation
 
 This plugin is not an official Jenkins plugin, so you must compile and load it yourself.  After you clone the git repository, build it using Maven:
@@ -32,7 +32,7 @@ In *Manage Jenkins > Configure System*, add *Environment Variables*:
 * Name `SGE_ROOT` value `/path/to/sge`
 * Name `SGE_BIN` value `/path/to/sge/bin/linux-x64`
 
-There are various other [ways to add environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but this always works.
+There are various other [ways to add environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above method always works.
 
 # Usage
 
