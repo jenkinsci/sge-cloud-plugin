@@ -70,6 +70,8 @@ public abstract class BatchSystem {
             String queueType) throws InterruptedException, IOException;
 
     /**
+     * Get the status of the job.
+     * 
      * @param jobId
      * @return the job status of the specified job id
      * @throws IOException
@@ -123,13 +125,13 @@ public abstract class BatchSystem {
             String outputFileName) throws InterruptedException, IOException;
 
     /**
-     * creates a formatted job output file of the running job in the slave from
-     * the specified output file (created by createJobProgressFile method)
+     * While the job is still running, create a file on the slave that begins
+     * after the specified offset and ending with line numberOfLines
+     * (created by createJobProgressFile method)
      *
-     * @param outputFileName the output file that should be formatted
-     * @param offset number of lines that should be skipped from the given
-     * output file
-     * @param numberOfLines the total amount of lines of the given output file
+     * @param outputFileName the output file to be formatted
+     * @param offset number of lines that should be skipped at the beginning
+     * @param numberOfLines the last line in outputFileName to be output
      * @throws InterruptedException
      */
     public abstract void createFormattedRunningJobOutputFile(
@@ -137,11 +139,12 @@ public abstract class BatchSystem {
             throws InterruptedException, IOException;
 
     /**
-     * creates the final job output file of the finished job in the slave
+     * After the job is finished, create a job output file on the slave
+     * beginning with the line after the offset through the end of the file.
      *
      * @param jobId the identifier of the job
-     * @param offset number of lines that should be skipped from the final
-     * output
+     * @param offset number of lines at the beginning of the file that should
+     * be skipped
      * @throws InterruptedException
      */
     public abstract void createFinishedJobOutputFile(String jobId, int offset)
