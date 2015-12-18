@@ -119,11 +119,12 @@ public class LSF extends BatchSystem {
     @Override
     public String getJobStatus(String jobId)
             throws IOException, InterruptedException {
+        // submitJob() returns "0" when it fails to even submit to SGE
     	if (jobId.equals("0")) {
-    		// submitJob() returns "0" when it fails to even submit to SGE
     		return JENKINS_FAIL_STATUS;
     	}
     	
+    	// Try to get the unfinished job status using qstat
     	String jobStatus = DONE_STATUS;
         Shell shell = new Shell("#!/bin/bash +x\n" +
         		"\"$SGE_BIN/qstat\" -u $USER > " + COMMUNICATION_FILE);
@@ -140,7 +141,7 @@ public class LSF extends BatchSystem {
     	String exitStatus = getFinishedJobExitStatus(jobId);
     	if (exitStatus == null) {
         	listener.getLogger().println("SGE plugin failed to get the " +
-        			"exit status for job '" + jobId + "  Assuming '" +
+        			"exit status for job '" + jobId + "'.  Assuming '" +
         			DONE_STATUS + "', which means the job succeeded.");
         	exitStatus = DONE_STATUS;
     	}
@@ -149,8 +150,8 @@ public class LSF extends BatchSystem {
 
     private String getFinishedJobExitStatus(String jobId)
             throws IOException, InterruptedException {
-    	Shell shell = new Shell("#!/bin/bash +x\n \"$SGE_BIN/qacct\" -j " + 
-            jobId + " > " + COMMUNICATION_FILE);
+        Shell shell = new Shell("#!/bin/bash +x\n" +
+        		"\"$SGE_BIN/qacct\" -j " + jobId + " > " + COMMUNICATION_FILE);
     	shell.perform(build, launcher, fakeListener);
     	copyFileToMaster.perform(build, launcher, fakeListener);
     	
@@ -164,13 +165,17 @@ public class LSF extends BatchSystem {
      * 
      *      key1     value1
      *      key2     value    containing    white  space
+     *      key3
      *          ...
      *
      * Repeated white space in the value will be normalized to a single space.
-     * For example, getValueFromFile("key2") will return "value containing white
-     * space".
+     * For example, `getValueFromFile("key2")` will return "value containing
+     * white space".
      * 
-     * If key is not found, return `null`.
+     * If there is no value, such as in the case of `getValueFromFile("key3")`,
+     * return `null`.
+     * 
+     * If `key` is not found, return `null`.
      */
     private String getValueFromFile(String key)
             throws IOException, InterruptedException {
@@ -180,7 +185,7 @@ public class LSF extends BatchSystem {
         String line;
         while ((line = fileReader.readLine()) != null) {
         	String word[] = line.trim().split("\\s+");
-        	if (word[0].equals(key)) {
+        	if (word.length >= 2 && word[0].equals(key)) {
         		value = word[1];
         		for (int i = 2; i < word.length; i++) {
         			value += " ";
@@ -244,6 +249,7 @@ public class LSF extends BatchSystem {
             listener.getLogger().println("This job could not be started due to "
             		+ "job properties.  The reason for the error is shown by "
             		+ "the qstat -j job_list option.");
+        // These additional states are unique to the Jenkins SGE plugin.
         } else if (jobStatus.equals(JENKINS_FAIL_STATUS)) {
             listener.getLogger().println("The Jenkins SGE plugin failed to even "
             		+ "submit this job to SGE.");
@@ -348,7 +354,7 @@ public class LSF extends BatchSystem {
     }
 
     private boolean jobExitedWithNonzeroStatus(String jobStatus) {
-    	return !jobStatus. equals("0") && jobStatus.matches("\\d+");
+    	return !jobStatus.equals("0") && jobStatus.matches("\\d+");
 	}
 
     @Override
