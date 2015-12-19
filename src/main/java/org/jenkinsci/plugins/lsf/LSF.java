@@ -68,6 +68,11 @@ public class LSF extends BatchSystem {
     // When a job completes successfully, it exits with status "0". 
     private static final String DONE_STATUS = "0";
 
+    /** Submit the job to SGE using the qsub command.
+     * 
+     * Redefine the Jenkins environment variable `JOB_NAME` as `JENKINS_JOB_ID`
+     * because SGE overwrites it with its own `JOB_NAME`.
+     */
     @Override
     public String submitJob(String jobFileName, boolean sendEmail,
             String queueType) throws InterruptedException, IOException {
@@ -79,12 +84,19 @@ public class LSF extends BatchSystem {
         }
         // submit the job to SGE
         Shell shell = new Shell("#!/bin/bash +x\n" +
-                // "env | sort\n" +
+                "if [ ! -x \"$SGE_BIN/qsub\" ]; then\n" +
+        		"    echo \"ERROR: SGE Plugin setup: Directory " +
+                "SGE_BIN='$SGE_BIN' does not contain executable SGE commands.\" 1>&2\n" +
+                "    exit 1\n" +
+        		"fi\n" +
+                // Save Jenkins' JOB_NAME because SGE will overwrite it.
+                "export JENKINS_JOB_NAME=\"$JOB_NAME\"\n" + 
+        		// "env | sort\n" +
         		"rm -f " + OUTPUT_FILE + "\n" +
                 "\"$SGE_BIN/qsub\" " +
                     emailOption +
                     " -q " + queueType +
-                    " -N " + jobFileName +
+                    " -N ${JOB_NAME//\\//.}" +
                     " -cwd" +
                     " -V" +
                     " -o " + OUTPUT_FILE +
@@ -133,18 +145,16 @@ public class LSF extends BatchSystem {
         String jobStats = getValueFromFile(jobId);
         if (jobStats != null) {
         	String word[] = jobStats.trim().split("\\s+");
-        	return word[3];
+        	if (word.length >= 4) {
+                return word[3];
+        	}
         }
+        listener.getLogger().println(
+        		"SGE qstat says that the job is no longer running.");
         
-    	// qstat did not list jobId, the job must be finished.  Get its
+    	// qstat did not list jobId, so the job must be finished.  Get its
     	// return status using qacct.
-    	String exitStatus = getFinishedJobExitStatus(jobId);
-    	if (exitStatus == null) {
-        	listener.getLogger().println("SGE plugin failed to get the " +
-        			"exit status for job '" + jobId + "'.  Assuming '" +
-        			DONE_STATUS + "', which means the job succeeded.");
-        	exitStatus = DONE_STATUS;
-    	}
+        String exitStatus = getFinishedJobExitStatus(jobId);
     	return exitStatus;
     }
 
@@ -152,10 +162,27 @@ public class LSF extends BatchSystem {
             throws IOException, InterruptedException {
         Shell shell = new Shell("#!/bin/bash +x\n" +
         		"\"$SGE_BIN/qacct\" -j " + jobId + " > " + COMMUNICATION_FILE);
-    	shell.perform(build, launcher, fakeListener);
-    	copyFileToMaster.perform(build, launcher, fakeListener);
+        String exitStatus = null;
+        
+        for (int i = 0; i < 10; i++) {
+        	shell.perform(build, launcher, fakeListener);
+        	copyFileToMaster.perform(build, launcher, fakeListener);
+    		exitStatus = getValueFromFile("exit_status");
+    		if (exitStatus != null) {
+    			break;
+    		}
+    		listener.getLogger().println(
+	            		"SGE qacct did not list the finished job.  Try again.");
+    		Thread.sleep(5000);
+        }
     	
-    	String exitStatus = getValueFromFile("exit_status");
+    	if (exitStatus == null) {
+        	listener.getLogger().println("SGE qacct failed to get the " +
+        			"exit status for job '" + jobId + "'.  Assuming '" +
+        			DONE_STATUS + "', which means the job succeeded.");
+        	exitStatus = DONE_STATUS;
+    	}
+
     	return exitStatus;
     }
     
@@ -184,6 +211,7 @@ public class LSF extends BatchSystem {
         String value = null;
         String line;
         while ((line = fileReader.readLine()) != null) {
+        	// listener.getLogger().println("LINE: " + line);
         	String word[] = line.trim().split("\\s+");
         	if (word.length >= 2 && word[0].equals(key)) {
         		value = word[1];
@@ -195,6 +223,7 @@ public class LSF extends BatchSystem {
         	}
         }
         fileReader.close();
+    	// listener.getLogger().println("VALUE: " + value);
         return value;
     }
 
@@ -219,7 +248,7 @@ public class LSF extends BatchSystem {
             listener.getLogger().println("This job is transferring and about "
             		+ "to be executed.");
         } else if (jobStatus.equals("r")) {
-            listener.getLogger().println("This job is executing.");
+            listener.getLogger().println("This job is running.");
         } else if (jobStatus.equals("s")) {
             listener.getLogger().println("This job was suspended by the user "
             		+ "via the qmod command.");
