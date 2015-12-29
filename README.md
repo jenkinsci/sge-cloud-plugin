@@ -72,7 +72,7 @@ The above states only describe jobs that have not yet finished, while the Jenkin
 * "0" (zero) for a successfully finished job
 * "1" through "255" for a job that failed with a nonzero exit status
 
-Exit status above 128 indicates that a signal terminated the job.  See the wiki for an [explanation of some exit statuses](wiki/Job-Exit-Status).
+Exit status above 128 indicates that a signal terminated the job.  See the wiki for an [explanation of some exit statuses](https://github.com/jmcgeheeiv/sge-cloud-plugin/wiki/Job-Exit-Status).
 
 Finally, When The Jenkins SGE plugin could not even submit the job to SGE, the job is given the state:
 
