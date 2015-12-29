@@ -48,7 +48,9 @@ Add a *Run job on LSF* build step and specify the batch job script you want to r
 
 Now, when Jenkins runs the project, it will run on the *LSF Cloud* that has the matching label.
 
-# Additional Job States Added
+# Job States
+
+## Unfinished Jobs
 
 The [qstat man page](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qstat.html) describes the following job states (job status) defined in SGE.  Each state is a string whose first character is most meaningful:
 
@@ -63,10 +65,14 @@ The [qstat man page](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qstat
 * "T", for threshold
 * "w", for waiting
 
+## Finished Jobs
+
 The above states only describe jobs that have not yet finished, while the Jenkins SGE plugin expects that completed jobs also have a state.  Therefore the SGE plugin derives the state of a finished job from its shell exit status:
 
 * "0" (zero) for a successfully finished job
 * "1" through "255" for a job that failed with a nonzero exit status
+
+Exit status above 128 indicates that a signal terminated the job.  See the wiki for an explanation of some exit statuses.
 
 Finally, When The Jenkins SGE plugin could not even submit the job to SGE, the job is given the state:
 
