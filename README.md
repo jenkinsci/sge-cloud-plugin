@@ -20,6 +20,8 @@ The job owner can select whether SGE should send an email when the job finishes.
 
 # Installation
 
+Install the `SSH Slaves` plugin (version 1.9) and the `Copy to Slave` plugin (version 1.4.3).
+
 This plugin is not an official Jenkins plugin, so you must compile and load it yourself.  After you clone the git repository, build it using Maven:
 
     cd sge-cloud-plugin/
