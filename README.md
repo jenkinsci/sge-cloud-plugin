@@ -50,7 +50,7 @@ Add a *Run job on LSF* build step and specify the batch job script you want to r
 
 Now, when Jenkins runs the project, it will run on the *LSF Cloud* that has the matching label.
 
-**Caution:** The SGE `qsub` command allows you to put `qsub` options in the script as pragmas beginning with `#$`.  For example:
+**Caution:** You can specify additional `qsub` command line options within the *Run job on LSF* build script on lines beginning with #$. For example:
 
     #$ -S /bin/bash
 
