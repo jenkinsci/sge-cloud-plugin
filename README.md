@@ -4,9 +4,9 @@ This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system
 
 `sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.  The immediate goal is to prove the feasibility of submitting SGE jobs from Jenkins.  At this point, only the functional changes required to make it function with SGE have been implemented.  As you see below, the GUI labels still say "LSF", not "SGE".  Even the name of the plugin is still `lsf-cloud`.
 
-Nonetheless, it does run with SGE and we are serious about using it in industrial production with our company's Grid Engine compute farm.
+Nonetheless, it does work with SGE and we are using it in industrial production with our company's Grid Engine compute farm.
 
-In the future I hope to integrate `sge-cloud-plugin` with `lsf-cloud-plugin` to create a single plugin that supports LSF, SGE and perhaps other batch queuing systems such as Condor.
+It would be nice to integrate `sge-cloud-plugin` with `lsf-cloud-plugin` to create a single plugin that supports LSF, SGE and perhaps other batch queuing systems such as Condor.  However, testing a single plugin on multiple batch systems is a daunting task.  For the sake of testing, it would probably be better to build independent plugins from shared code.
  
 # Features
 
