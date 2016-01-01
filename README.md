@@ -94,10 +94,10 @@ plugin derives the state of a finished job from its shell exit status:
 * "0" (zero) for a successfully finished job
 * "1" through "255" for a job that failed with a nonzero exit status
 
-Finally, When The Jenkins SGE plugin could not even submit the job to SGE, the
+Additionally, when The Jenkins SGE plugin could not even submit the job to SGE, the
 job is given the state:
 
-* "J"
+* "J", for Jenkins SGE plugin failure to submit the job
 
 # Environment Variables
 
@@ -105,6 +105,7 @@ Jenkins
 [adds environment variables to the environment](https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables),
 and these are imported into the SGE job environment.  Then
 [SGE adds some more](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html).
+
 Unfortunately, there is one variable name collision.  Since SGE overwrites
 Jenkins' `JOB_NAME`, it is redefined as `JENKINS_JOB_NAME`.
 
