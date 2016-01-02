@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import hudson.model.Descriptor;
 import hudson.slaves.RetentionStrategy;
@@ -96,7 +96,7 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
 
         @Override
         public String getDisplayName() {
-            return "LSF";
+            return "SGE";
         }
     }
 

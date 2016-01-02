@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import hudson.Extension;
 import hudson.model.Computer;
@@ -49,7 +49,7 @@ public class BatchCloud extends Cloud {
 
     // The name of the cloud
     private String cloudName;
-    // LSF queue type
+    // SGE queue type
     private String queueType;
     // The label that the cloud is associated with
     private String label;
@@ -186,7 +186,7 @@ public class BatchCloud extends Cloud {
 
         @Override
         public String getDisplayName() {
-            return "LSF Cloud";
+            return "SGE Cloud";
         }
     }
 }

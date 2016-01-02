@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier;
 import hudson.Launcher;

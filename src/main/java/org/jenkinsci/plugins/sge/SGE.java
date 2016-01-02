@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -45,14 +45,14 @@ import org.apache.commons.io.FileUtils;
  * 
  * @author John McGehee
  * 
- * Based on the LSF version by Laisvydas Skurevicius
+ * Based on the SGE version by Laisvydas Skurevicius
  */
-public class LSF extends BatchSystem {
+public class SGE extends BatchSystem {
 
     private static final BuildListenerAdapter fakeListener
             = new BuildListenerAdapter(TaskListener.NULL);
 
-    public LSF(AbstractBuild<?, ?> build, Launcher launcher,
+    public SGE(AbstractBuild<?, ?> build, Launcher launcher,
             BuildListener listener, String COMMUNICATION_FILE, 
             String masterWorkingDirectory) {
         super(build, launcher, listener, COMMUNICATION_FILE, 

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier;
 import com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper;
@@ -134,7 +134,7 @@ public class BatchBuilder extends Builder {
     }
 
     /**
-     * This is where the interaction between Jenkins and LSF happens.
+     * This is where the interaction between Jenkins and SGE happens.
      *
      * @param build
      * @param launcher
@@ -149,7 +149,7 @@ public class BatchBuilder extends Builder {
             throws InterruptedException, IOException {
         masterWorkingDirectory = Jenkins.getInstance().root.getAbsolutePath()
                 + "/userContent/" + build.getProject().getName() + "/";
-        BatchSystem batchSystem = new LSF(build, launcher,
+        BatchSystem batchSystem = new SGE(build, launcher,
                 listener, COMMUNICATION_FILE, masterWorkingDirectory);
         CopyToMasterNotifier copyFileToMaster
                 = new CopyToMasterNotifier(COMMUNICATION_FILE, "",
@@ -167,7 +167,7 @@ public class BatchBuilder extends Builder {
         slaveWorkingDirectory
                 = getSlaveWorkingDirectory(build, launcher, fakeListener);
         // sends the selected files to the slave 
-        // and prepares the commands to send files to LSF
+        // and prepares the commands to send files to SGE
         String sendFilesShellCommands = sendFiles(build, launcher, listener);
         sendJobToSlave(build, launcher, listener, sendFilesShellCommands,
                 jobFileName);
@@ -554,7 +554,7 @@ public class BatchBuilder extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "Run job on LSF";
+            return "Run job on SGE";
         }
 
         @Override

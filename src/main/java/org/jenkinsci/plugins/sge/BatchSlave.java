@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.lsf;
+package org.jenkinsci.plugins.sge;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
@@ -62,7 +62,7 @@ public class BatchSlave extends Slave {
                         Secret.toString(password), "", ""),
                 new BatchRetentionStrategy(1),
                 Collections.<NodeProperty<?>>emptyList());
-        LOGGER.log(Level.INFO, "Constructing LSF slave {0}", name);
+        LOGGER.log(Level.INFO, "Constructing SGE slave {0}", name);
     }
 
     /**
@@ -73,7 +73,7 @@ public class BatchSlave extends Slave {
         try {
             Jenkins.getInstance().removeNode(this);
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to terminate LSF instance: "
+            LOGGER.log(Level.WARNING, "Failed to terminate SGE instance: "
                     + getInstanceId(), e);
         }
     }
@@ -92,7 +92,7 @@ public class BatchSlave extends Slave {
 
         @Override
         public String getDisplayName() {
-            return "LSF Slave";
+            return "SGE Slave";
         }
     }
 

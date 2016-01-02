@@ -29,7 +29,7 @@ THE SOFTWARE.
     <f:entry title="Cloud Name" field="cloudName">
         <f:textbox/>
     </f:entry>
-    <f:entry title="LSF queue type" field="queueType">
+    <f:entry title="SGE queue type" field="queueType">
         <f:textbox/>
     </f:entry>
     <f:entry title="Label" field="label">

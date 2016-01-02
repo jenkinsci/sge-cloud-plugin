@@ -32,7 +32,7 @@ THE SOFTWARE.
     <f:advanced>
         <f:entry field="uploaded">
             <j:set var="url" 
-                   value="${rootURL}/descriptor/org.jenkinsci.plugins.lsf.BatchBuilder/startUpload?job=${it.fullName}&amp;files=${instance.uploadedFiles}"/>
+                   value="${rootURL}/descriptor/org.jenkinsci.plugins.sge.BatchBuilder/startUpload?job=${it.fullName}&amp;files=${instance.uploadedFiles}"/>
             <iframe src="${url}" frameborder="0" width="100%"/> 
         </f:entry>
         <f:entry title="Files to send" field="filesToSend">
