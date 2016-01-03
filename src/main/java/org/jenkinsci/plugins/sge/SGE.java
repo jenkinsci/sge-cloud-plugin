@@ -89,19 +89,21 @@ public class SGE extends BatchSystem {
         }
         // submit the job to SGE
         String command = "#!/bin/bash +x\n" +
+                "set +x\n" +
                 "if [ ! -x \"$SGE_BIN/qsub\" ]; then\n" +
-        		"    echo \"ERROR: SGE Plugin setup: Directory " +
-                "SGE_BIN='$SGE_BIN' does not contain executable SGE commands.\" 1>&2\n" +
+                "    echo \"ERROR: SGE Plugin setup: Directory " +
+                "SGE_BIN='$SGE_BIN' does not contain an executable SGE 'qsub' command.\" 1>&2\n" +
                 "    exit 1\n" +
-        		"fi\n" +
+                "fi\n" +
+                "set -x\n" +
                 // Save Jenkins' JOB_NAME because SGE will overwrite it.
                 "export JENKINS_JOB_NAME=\"$JOB_NAME\"\n" + 
-        		"rm -f " + OUTPUT_FILE + "\n" +
+                "rm -f " + OUTPUT_FILE + "\n" +
                 "\"$SGE_BIN/qsub\" " +
                     emailOption +
                     " -S /bin/bash" +
                     " -q " + queueType +
-                    " -N jenkins.${JENKINS_JOB_NAME//\\//.}" +
+                    " -N ${JENKINS_JOB_NAME//\\//.}" +
                     " -cwd" +
                     " -V" +
                     " -o " + OUTPUT_FILE +
@@ -122,16 +124,16 @@ public class SGE extends BatchSystem {
         String jobId = QSUB_FAILED_JOB_ID;
         if (line == null) {
             listener.getLogger().println(
-            		"ERROR: SGE qsub job submission failed.  There was no " +
+                    "ERROR: SGE qsub job submission failed.  There was no " +
                     "diagnostic message.");
         } else if (!line.startsWith("Your job ") ||
-        		!line.endsWith(" has been submitted")) {
-        	listener.getLogger().println(
-        			"ERROR: SGE qsub job submission failed because:");
-        	while (line != null) {
-        		listener.getLogger().println("    " + line.trim());
-        	    line = fileReader.readLine();
-        	}
+                !line.endsWith(" has been submitted")) {
+            listener.getLogger().println(
+                    "ERROR: SGE qsub job submission failed because:");
+            while (line != null) {
+                listener.getLogger().println("    " + line.trim());
+                line = fileReader.readLine();
+            }
         } else {
             jobId = line.trim().split(" ")[2];
             listener.getLogger().println(line);
@@ -144,66 +146,66 @@ public class SGE extends BatchSystem {
     public String getJobStatus(String jobId)
             throws IOException, InterruptedException {
         // submitJob() returns QSUB_FAILED_JOB_ID when it fails to even submit
-    	// to SGE
-    	if (jobId.equals(QSUB_FAILED_JOB_ID)) {
-    		return JENKINS_FAIL_STATUS;
-    	}
-    	
-    	// Try to get the unfinished job status using qstat
-    	String jobStatus = FINISHED_SUCCESSFULLY_STATUS;
+        // to SGE
+        if (jobId.equals(QSUB_FAILED_JOB_ID)) {
+            return JENKINS_FAIL_STATUS;
+        }
+        
+        // Try to get the unfinished job status using qstat
+        String jobStatus = FINISHED_SUCCESSFULLY_STATUS;
         Shell shell = new Shell("#!/bin/bash +x\n" +
-        		"\"$SGE_BIN/qstat\" -u $USER > " + COMMUNICATION_FILE);
+                "\"$SGE_BIN/qstat\" -u $USER > " + COMMUNICATION_FILE);
         shell.perform(build, launcher, fakeListener);
         copyFileToMaster.perform(build, launcher, fakeListener);
         String jobStats = getValueFromFile(jobId);
         if (jobStats != null) {
-        	String word[] = jobStats.trim().split("\\s+");
-        	if (word.length >= 4) {
+            String word[] = jobStats.trim().split("\\s+");
+            if (word.length >= 4) {
                 return word[3];
-        	}
+            }
         }
         listener.getLogger().println(
-        		"SGE qstat says that the job is no longer running.");
+                "SGE qstat says that the job is no longer running.");
         
-    	// qstat did not list jobId, so the job must be finished.  Get its
-    	// return status using qacct.
+        // qstat did not list jobId, so the job must be finished.  Get its
+        // return status using qacct.
         String exitStatus = getFinishedJobExitStatus(jobId);
-    	return exitStatus;
+        return exitStatus;
     }
 
     private String getFinishedJobExitStatus(String jobId)
             throws IOException, InterruptedException {
         // submitJob() returns QSUB_FAILED_JOB_ID when it fails to even submit
-    	// to SGE
-    	if (jobId.equals(QSUB_FAILED_JOB_ID)) {
-    		return JENKINS_FAIL_STATUS;
-    	}
-    	
+        // to SGE
+        if (jobId.equals(QSUB_FAILED_JOB_ID)) {
+            return JENKINS_FAIL_STATUS;
+        }
+        
         Shell shell = new Shell("#!/bin/bash +x\n" +
-        		"\"$SGE_BIN/qacct\" -j " + jobId + " > " + COMMUNICATION_FILE);
+                "\"$SGE_BIN/qacct\" -j " + jobId + " > " + COMMUNICATION_FILE);
         String exitStatus = null;
         
         for (int i = 0; i < 10; i++) {
-        	shell.perform(build, launcher, fakeListener);
-        	copyFileToMaster.perform(build, launcher, fakeListener);
-    		exitStatus = getValueFromFile("exit_status");
-    		if (exitStatus != null) {
-    			break;
-    		}
-    		listener.getLogger().println(
-	            		"SGE qacct did not list the finished job.  Trying " +
-	            		"qacct again.");
-    		Thread.sleep(5000);
+            shell.perform(build, launcher, fakeListener);
+            copyFileToMaster.perform(build, launcher, fakeListener);
+            exitStatus = getValueFromFile("exit_status");
+            if (exitStatus != null) {
+                break;
+            }
+            listener.getLogger().println(
+                        "SGE qacct did not list the finished job.  Trying " +
+                        "qacct again.");
+            Thread.sleep(5000);
         }
-    	
-    	if (exitStatus == null) {
-        	listener.getLogger().println("SGE qacct failed to get the " +
-        			"exit status for job '" + jobId + "'.  Assuming '" +
-        			FINISHED_SUCCESSFULLY_STATUS + "', which means the job succeeded.");
-        	exitStatus = FINISHED_SUCCESSFULLY_STATUS;
-    	}
+        
+        if (exitStatus == null) {
+            listener.getLogger().println("SGE qacct failed to get the " +
+                    "exit status for job '" + jobId + "'.  Assuming '" +
+                    FINISHED_SUCCESSFULLY_STATUS + "', which means the job succeeded.");
+            exitStatus = FINISHED_SUCCESSFULLY_STATUS;
+        }
 
-    	return exitStatus;
+        return exitStatus;
     }
     
     /** Presuming that COMMUNICATION_FILE already contains the result of
@@ -231,15 +233,15 @@ public class SGE extends BatchSystem {
         String value = null;
         String line;
         while ((line = fileReader.readLine()) != null) {
-        	String word[] = line.trim().split("\\s+");
-        	if (word.length >= 2 && word[0].equals(key)) {
-        		value = word[1];
-        		for (int i = 2; i < word.length; i++) {
-        			value += " ";
-        			value += word[i];
-        		}
-        		break; 
-        	}
+            String word[] = line.trim().split("\\s+");
+            if (word.length >= 2 && word[0].equals(key)) {
+                value = word[1];
+                for (int i = 2; i < word.length; i++) {
+                    value += " ";
+                    value += word[i];
+                }
+                break; 
+            }
         }
         fileReader.close();
         return value;
@@ -248,58 +250,60 @@ public class SGE extends BatchSystem {
     @Override
     public void killJob(String jobId) throws InterruptedException {
         Shell shell = new Shell("#!/bin/bash +x\n" +
-        		"\"$SGE_BIN/qdel\" " + jobId);
+                "\"$SGE_BIN/qdel\" " + jobId);
         shell.perform(build, launcher, listener);
     }
 
     @Override
     public void processStatus(String jobStatus) {
-    	/**
-    	 * Print an explanation for the given job status.
-		 * 
-		 * These explanations of status come from the qstat man page.
-    	 */
+        /**
+         * Print an explanation for the given job status.
+         * 
+         * These explanations of status come from the qstat man page.
+         */
         if (jobStatus.startsWith("d")) {
             listener.getLogger().println("A qdel command has been used to "
-            		+ "initiate deletion of this job.");
+                    + "initiate deletion of this job.");
         } else if (jobStatus.startsWith("t")) {
             listener.getLogger().println("This job is transferring and about "
-            		+ "to be executed.");
+                    + "to be executed.");
         } else if (jobStatus.startsWith("r")) {
             listener.getLogger().println("This job is running.");
         } else if (jobStatus.startsWith("s")) {
             listener.getLogger().println("This job was suspended by the user "
-            		+ "via the qmod command.");
+                    + "via the qmod command.");
         } else if (jobStatus.startsWith("S")) {
             listener.getLogger().println("The queue containing this job is "
-            		+ "suspended and therefore this job is also suspended.");
+                    + "suspended and therefore this job is also suspended.");
         } else if (jobStatus.startsWith("T")) {
             listener.getLogger().println("This job was suspended because at "
-            		+ "least one suspend threshold of its queue has been "
-            		+ "exceeded.");
+                    + "least one suspend threshold of its queue has been "
+                    + "exceeded.");
         } else if (jobStatus.startsWith("R")) {
             listener.getLogger().println("This job has been restarted.  "
-            		+ "This can be caused by a job migration or because of one "
-            		+ "of the reasons described in the -r section of the qsub "
-            		+ "command.");
+                    + "This can be caused by a job migration or because of one "
+                    + "of the reasons described in the -r section of the qsub "
+                    + "command.");
         } else if (jobStatus.startsWith("w")) {
             listener.getLogger().println("This job is waiting pending execution.");
         } else if (jobStatus.startsWith("h")) {
             listener.getLogger().println("This job is not eligible for "
-            		+ "execution because it has been assigned a hold state "
-            		+ "via qhold, qalter or the qsub -h option "
-            		+ "or the job is waiting for completion of the jobs "
-            		+ "to which job dependencies have been assigned "
-            		+ "via the -hold_jid or -hold_jid-ad options of "
-            		+ "qsub or qalter.");
+                    + "execution because it has been assigned a hold state "
+                    + "via qhold, qalter or the qsub -h option "
+                    + "or the job is waiting for completion of the jobs "
+                    + "to which job dependencies have been assigned "
+                    + "via the -hold_jid or -hold_jid-ad options of "
+                    + "qsub or qalter.");
         } else if (jobStatus.startsWith("E")) {
             listener.getLogger().println("This job could not be started due to "
-            		+ "job properties.  The reason for the error is shown by "
-            		+ "the qstat -j job_list option.");
+                    + "job properties.  The reason for the error is shown by "
+                    + "the qstat -j job_list option.");
+        } else if (jobStatus.startsWith("q")) {
+            listener.getLogger().println("This job is queued and awaiting execution.");
         // These additional states are unique to the Jenkins SGE plugin.
         } else if (jobStatus.equals(JENKINS_FAIL_STATUS)) {
             listener.getLogger().println("The Jenkins SGE plugin failed to even "
-            		+ "submit this job to SGE.");
+                    + "submit this job to SGE.");
         } else if (jobStatus.equals(FINISHED_SUCCESSFULLY_STATUS)) {
             listener.getLogger().println("This job has completed successfully.");
         } else if (jobExitedWithErrors(jobStatus)) {
@@ -307,7 +311,7 @@ public class SGE extends BatchSystem {
                     + jobStatus + "'.");
         } else {
             listener.getLogger().println("Job status '" + jobStatus
-            		+ "' is not recognized.");
+                    + "' is not recognized.");
         }
     }
 
@@ -323,10 +327,10 @@ public class SGE extends BatchSystem {
             throws InterruptedException, IOException {
         String exitStatus = getFinishedJobExitStatus(jobId);
         if (exitStatus != null) {
-        	listener.getLogger().println("Exited with exit status " + exitStatus);
+            listener.getLogger().println("Exited with exit status " + exitStatus);
         } else {
-        	listener.getLogger().println(
-        			"Exited, but the exit status could not be found");
+            listener.getLogger().println(
+                    "Exited, but the exit status could not be found");
         }
     }
 
@@ -390,20 +394,20 @@ public class SGE extends BatchSystem {
     @Override
     public boolean isEndStatus(String jobStatus) {
         return jobCompletedSuccessfully(jobStatus) ||
-        		jobExitedWithErrors(jobStatus);
+                jobExitedWithErrors(jobStatus);
     }
 
     @Override
     public boolean jobExitedWithErrors(String jobStatus) {
         return  jobStatus.startsWith("E") ||
-        		jobStatus.equals(JENKINS_FAIL_STATUS) ||
-        		jobExitedWithNonzeroStatus(jobStatus);
+                jobStatus.equals(JENKINS_FAIL_STATUS) ||
+                jobExitedWithNonzeroStatus(jobStatus);
     }
 
     private boolean jobExitedWithNonzeroStatus(String jobStatus) {
-    	return !jobStatus.equals(FINISHED_SUCCESSFULLY_STATUS)
-    			&& jobStatus.matches("\\d+");
-	}
+        return !jobStatus.equals(FINISHED_SUCCESSFULLY_STATUS)
+                && jobStatus.matches("\\d+");
+    }
 
     @Override
     public boolean jobCompletedSuccessfully(String jobStatus) {
