@@ -97,4 +97,4 @@ Finally, when the Jenkins SGE plugin could not even submit the job to SGE, the j
 
 # Environment Variables
 
-Jenkins [adds environment variables to the environment](https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables), and these are imported into the SGE job environment.  Then [SGE adds some more](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html).  Since SGE overwrites Jenkins' `JOB_NAME`, the Jenkins value is saved in environment variable `JENKINS_JOB_NAME`.
+Jenkins [adds environment variables to the environment](https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables), and these are imported into the SGE job environment.  Then [SGE adds some more](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html).  There is just one variable name collision.  Before SGE overwrites Jenkins' `JOB_NAME`, the Jenkins value is saved in environment variable `JENKINS_JOB_NAME`.
