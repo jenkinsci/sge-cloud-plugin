@@ -53,13 +53,14 @@ Add a *Run job on SGE* build step and specify the batch job script you want to r
 
 Now, when Jenkins runs the project, it will run on the *SGE Cloud* that has the matching label.
 
-## Script Success/Failure
-By default, the exit status of the last command determines the success or failure of the build step.  For example, the following script will be considered a success:
+## Set Your Script to Fail on the First Failure
+
+By default, the exit status of the last command determines the success or failure of the build step.  For example, the following script would be inappropriately considered a success:
 
     ls /nonexistent    # Error, exit status 2
     echo "This echo command succeeds with exit status 0"
 
-If you want the job to fail and halt upon the first nonzero exit status, use the [Bash -e option](http://www.tldp.org/LDP/abs/html/options.html) in your script.  The following script will fail upon the first error:
+If you prefer that your job fail and halt upon the first nonzero exit status, use the [Bash -e option](http://www.tldp.org/LDP/abs/html/options.html).  The following script will fail upon the first error:
 
     set -e
     ls /nonexistent    # Error, exit status 2
@@ -67,10 +68,11 @@ If you want the job to fail and halt upon the first nonzero exit status, use the
 
 
 ## Additional qsub Options
-For your reference, the SGE Plugin prints the qsub command to the Jenkins job *Console Output*:
+
+So that you can see the `qsub` command used to submit jobs, the SGE Plugin prints the qsub command to the Jenkins job *Console Output*:
 
     Submitting SGE job using the command:
-        "$SGE_BIN/qsub" ...    # Options not shown here because they will undoubtably be out-of-date
+        "$SGE_BIN/qsub" ...    # Options not shown in docs because they will undoubtably be out-of-date
 
 You can specify additional `qsub` command line options within the *Run job on SGE* build script on lines beginning with #$. For example:
 
