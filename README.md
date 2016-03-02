@@ -32,11 +32,15 @@ Install the prerequisite plugins:
 
 In *Manage Jenkins > Plugin Manager*, select the *Advanced* tab.  Use *Upload Plugin* to upload the plugin file `sge-cloud-plugin/target/sge-cloud.hpi`to Jenkins.
 
+## Incompatabilities
+
+The Jenkins SGE Plugin is incompatable with Jenkins views.  If non-default views are defined, it becomes impossible to view the project's workspace.  This is discussed further in issue #1.
+
 # Set Up Jenkins
 
 In SGE, add your Jenkins master host as an SGE submit host.
 
-In *Manage Jenkins > Configure System*, add *Environment Variables*:
+In *Manage Jenkins > Configure System*, add *Environment Variables*:
 
 * Name `SGE_ROOT` value `/path/to/sge`
 * Name `SGE_BIN` value `/path/to/sge/bin/linux-x64`
@@ -74,7 +78,7 @@ So that you can see the `qsub` command used to submit jobs, the SGE Plugin print
     Submitting SGE job using the command:
         "$SGE_BIN/qsub" ...    # Options not shown in docs because they will undoubtably be out-of-date
 
-You can specify additional `qsub` command line options within the *Run job on SGE* build script on lines beginning with #$. For example:
+It is possible to specify additional `qsub` command line options within the *Run job on SGE* build script on lines beginning with #$. For example:
 
     #$ -P project_name
 
