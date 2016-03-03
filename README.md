@@ -4,7 +4,7 @@ This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system
 
 `sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.
 
-`sge-cloud-plugin` is not yet an official Jenkins plugin, but it is currently being used in industrial production with our company's Grid Engine compute farm.  It does work.
+`sge-cloud-plugin` is not yet an official Jenkins plugin, yet it is currently being used in industrial production on Wave Computing's Grid Engine compute farm.  It does work and we are maintaining it.
 
 While it might be nice to integrate `sge-cloud-plugin` and `lsf-cloud-plugin` into a single Jenkins plugin, this would be difficult to test, as few organizations have all batch systems installed.  For the sake of testability, it would probably be better to build multiple independent plugins from shared code.
 
@@ -32,11 +32,15 @@ Install the prerequisite plugins:
 
 In *Manage Jenkins > Plugin Manager*, select the *Advanced* tab.  Use *Upload Plugin* to upload the plugin file `sge-cloud-plugin/target/sge-cloud.hpi`to Jenkins.
 
+## Incompatabilities
+
+The Jenkins SGE Plugin is incompatable with Jenkins views.  If non-default views are defined, it becomes impossible to view the project's workspace.  This is discussed further in issue #1.
+
 # Set Up Jenkins
 
 In SGE, add your Jenkins master host as an SGE submit host.
 
-In *Manage Jenkins > Configure System*, add *Environment Variables*:
+In *Manage Jenkins > Configure System*, add *Environment Variables*:
 
 * Name `SGE_ROOT` value `/path/to/sge`
 * Name `SGE_BIN` value `/path/to/sge/bin/linux-x64`
@@ -53,9 +57,30 @@ Add a *Run job on SGE* build step and specify the batch job script you want to r
 
 Now, when Jenkins runs the project, it will run on the *SGE Cloud* that has the matching label.
 
-**Caution:** You can specify additional `qsub` command line options within the *Run job on SGE* build script on lines beginning with #$. For example:
+## Set Your Script to Fail on the First Failure
 
-    #$ -S /bin/bash
+By default, the exit status of the last command determines the success or failure of the build step.  For example, the following script would be inappropriately considered a success:
+
+    ls /nonexistent    # Error, exit status 2
+    echo "This echo command succeeds with exit status 0"
+
+If you prefer that your job fail and halt upon the first nonzero exit status, use the [Bash -e option](http://www.tldp.org/LDP/abs/html/options.html).  The following script will fail upon the first error:
+
+    set -e
+    ls /nonexistent    # Error, exit status 2
+    echo "This is never executed because the above ls command failed."
+
+
+## Additional qsub Options
+
+So that you can see the `qsub` command used to submit jobs, the SGE Plugin prints the qsub command to the Jenkins job *Console Output*:
+
+    Submitting SGE job using the command:
+        "$SGE_BIN/qsub" ...    # Options not shown in docs because they will undoubtably be out-of-date
+
+It is possible to specify additional `qsub` command line options within the *Run job on SGE* build script on lines beginning with #$. For example:
+
+    #$ -P project_name
 
 While this might sometimes be useful, it can cause trouble if your *Run job on SGE* build step inadvertently contains `#$`.  In particular, this can happen if you comment out a line that begins with `$`:
 
