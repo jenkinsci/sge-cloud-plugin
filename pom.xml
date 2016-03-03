@@ -15,8 +15,8 @@
   <packaging>hpi</packaging>
   
   <name>sge-cloud</name>
-  <description>A Jenkins plugin that allows submitting batch jobs to SGE batch system.</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/sge-cloud+Plugin</url>
+  <description>This Jenkins plugin submits batch jobs to the SGE (Sun Grid Engine) batch system.</description>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/sge-cloud-plugin+Plugin</url>
 
   <licenses>
     <license>
@@ -27,6 +27,11 @@
   
   <developers>
     <developer>
+      <id>jmcgeheeiv</id>
+      <name>John McGehee</name>
+      <email>jmcgeheeiv@users.noreply.github.com</email>
+    </developer>
+    <developer>
       <id>laisvydas</id>
       <name>Laisvydas Skurevicius</name>
       <email>laisvydas.skurevicius@gmail.com</email>
@@ -34,9 +39,9 @@
   </developers>
   
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/sge-cloud-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/sge-cloud-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/sge-cloud-plugin</url>
+    <connection>:https://github.com/wavecomp/sge-cloud-plugin.git</connection>
+    <developerConnection>git@github.com:wavecomp/sge-cloud-plugin.git</developerConnection>
+    <url>https://github.com/wavecomp/sge-cloud-plugin</url>
     <tag>HEAD</tag>
   </scm>
   
@@ -68,4 +73,8 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <issueManagement>
+    	<url>https://github.com/wavecomp/sge-cloud-plugin/issues</url>
+    	<system>GitHub</system>
+    </issueManagement>
 </project>
