@@ -88,7 +88,7 @@ public class SGE extends BatchSystem {
             emailOption = "-m n";
         }
         // submit the job to SGE
-        String command = "#!/bin/bash +x\n" +
+        String commandPreamble = "#!/bin/bash +x\n" +
                 "set +x\n" +
                 "if [ ! -x \"$SGE_BIN/qsub\" ]; then\n" +
                 "    echo \"ERROR: SGE Plugin setup: Directory " +
@@ -98,8 +98,9 @@ public class SGE extends BatchSystem {
                 "set -x\n" +
                 // Save Jenkins' JOB_NAME because SGE will overwrite it.
                 "export JENKINS_JOB_NAME=\"$JOB_NAME\"\n" + 
-                "rm -f " + OUTPUT_FILE + "\n" +
-                "\"$SGE_BIN/qsub\" " +
+                "rm -f " + OUTPUT_FILE + "\n";
+        
+        String qsubCommand = "\"$SGE_BIN/qsub\" " +
                     emailOption +
                     " -S /bin/bash" +
                     " -q " + queueType +
@@ -110,9 +111,9 @@ public class SGE extends BatchSystem {
                     " -j yes " + // Send stderr + stdout to OUTPUT_FILE
                     jobFileName +
                     "  &> " + COMMUNICATION_FILE;
-        listener.getLogger().println("Submitting SGE job using the command:\n" +
-                    command);
-        Shell shell = new Shell(command);
+        listener.getLogger().println("Submitting SGE job using the command:\n    " +
+                    qsubCommand);
+        Shell shell = new Shell(commandPreamble + qsubCommand);
         shell.perform(build, launcher, listener);
 
         // Extract the job id
