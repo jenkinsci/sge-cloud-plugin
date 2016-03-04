@@ -98,16 +98,23 @@ public class BatchCloud extends Cloud {
         return list;
     }
 
+    /** Provision a new slave.
+     *
+     * According to class {@link Cloud}, name is expected to be short ID-like
+     * string without any characters unsafe as a Java identifier or URL path
+     * token.
+     */
     private BatchSlave doProvision(int numExecutors) 
             throws Descriptor.FormException, IOException {
-        String name = "BatchSystem-" + UUID.randomUUID().toString();
+        String name = "SGE_Cloud_" +
+            UUID.randomUUID().toString().replace('-', '_');
         return new BatchSlave(name, this.label, numExecutors, hostname, port, 
                 username, password);
     }
 
     /**
      * Checks if a jobs label matches the clouds label and determines if a slave
-     * should be created
+     * should be created.
      *
      * @param label
      * @return
