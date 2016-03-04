@@ -5,17 +5,17 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.580.1</version>
+    <version>1.554.1</version>
     <relativePath />
   </parent>
   
   <groupId>org.jenkins-ci.plugins</groupId>
-  <artifactId>sge-cloud</artifactId>
+  <artifactId>sge-cloud-plugin</artifactId>
   <version>1.13-SNAPSHOT</version>
   <packaging>hpi</packaging>
   
-  <name>sge-cloud</name>
-  <description>This Jenkins plugin submits batch jobs to the SGE (Sun Grid Engine) batch system.</description>
+  <name>Jenkins SGE Plugin</name>
+  <description>Allows Jenkins to submit batch jobs to the SGE (Sun Grid Engine) batch system.</description>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/sge-cloud-plugin+Plugin</url>
 
   <licenses>
@@ -74,7 +74,14 @@
         </dependency>
     </dependencies>
     <issueManagement>
-    	<url>https://github.com/wavecomp/sge-cloud-plugin/issues</url>
-    	<system>GitHub</system>
+        <url>https://github.com/wavecomp/sge-cloud-plugin/issues</url>
+        <system>GitHub</system>
     </issueManagement>
+    <organization>
+        <name>Wave Computing</name>
+        <url>http://www.wavecomp.com</url>
+    </organization>
+    <properties>
+        <jenkins.version>1.609.1</jenkins.version>
+    </properties>
 </project>
