@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.sge;
 
+import hudson.model.Computer;
 import hudson.model.Descriptor;
 import hudson.slaves.RetentionStrategy;
 import hudson.slaves.SlaveComputer;
@@ -47,29 +48,32 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
     }
 
     /**
-     * Checks if the slave computer needs to be terminated and terminates if
-     * needed
+     * This method will be called periodically to allow this strategy to decide
+     * whether to terminate the specified {@link Computer}.
      *
-     * @param computer
-     * @return
+     * @param c {@link Computer} for which this strategy is assigned. This
+     * computer may be online or offline.
+     * @return The number of minutes after which this strategy would like to be
+     * checked again. The strategy may be rechecked earlier or later that this!
      */
     @Override
     public long check(SlaveComputer computer) {
+        final int minutesToNextCheck = 1;
 
         if (computer.getNode() == null) {
-            return 1;
+            return minutesToNextCheck;
         }
 
         if ((System.currentTimeMillis() - computer.getConnectTime())
                 < MINUTES.toMillis(idleTerminationMinutes)) {
-            return 1;
+            return minutesToNextCheck;
         }
 
         if (computer.isOffline()) {
             LOGGER.log(Level.INFO, "Disconnecting offline computer {0}",
                     computer.getName());
             ((BatchSlave) (computer.getNode())).terminate();
-            return 1;
+            return minutesToNextCheck;
         }
 
         if (computer.isIdle()) {
@@ -83,7 +87,7 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
                 ((BatchSlave) (computer.getNode())).terminate();
             }
         }
-        return 1;
+        return minutesToNextCheck;
     }
 
     @Override

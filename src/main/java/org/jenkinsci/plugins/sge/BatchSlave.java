@@ -37,13 +37,18 @@ import hudson.util.Secret;
 import jenkins.model.Jenkins;
 
 /**
- *
+ * Provision a batch slave.  The workspace will remain available for viewing
+ * in Jenkins for {@code idleTerminationMinutes} minutes after the job finishes.
+ * 
+ * @author John McGehee
  * @author Laisvydas Skurevicius
  */
 public class BatchSlave extends Slave {
 
     private static final Logger LOGGER = Logger.getLogger(BatchSlave.class
             .getName());
+ 
+    private static final int idleTerminationMinutes = 24 * 60; // 1 day
 
     public BatchSlave(String name,
             String label,
@@ -60,7 +65,7 @@ public class BatchSlave extends Slave {
                 label,
                 new SSHLauncher(hostName, port, userName, 
                         Secret.toString(password), "", ""),
-                new BatchRetentionStrategy(1),
+                new BatchRetentionStrategy(idleTerminationMinutes),
                 Collections.<NodeProperty<?>>emptyList());
         LOGGER.log(Level.INFO, "Constructing SGE slave {0}", name);
     }
