@@ -47,8 +47,6 @@ public class BatchSlave extends Slave {
 
     private static final Logger LOGGER = Logger.getLogger(BatchSlave.class
             .getName());
- 
-    private static final int idleTerminationMinutes = 24 * 60; // 1 day
 
     public BatchSlave(String name,
             String label,
@@ -65,7 +63,7 @@ public class BatchSlave extends Slave {
                 label,
                 new SSHLauncher(hostName, port, userName, 
                         Secret.toString(password), "", ""),
-                new BatchRetentionStrategy(idleTerminationMinutes),
+                new BatchRetentionStrategy(1),
                 Collections.<NodeProperty<?>>emptyList());
         LOGGER.log(Level.INFO, "Constructing SGE slave {0}", name);
     }

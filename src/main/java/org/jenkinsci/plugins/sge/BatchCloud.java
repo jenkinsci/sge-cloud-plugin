@@ -106,8 +106,9 @@ public class BatchCloud extends Cloud {
      */
     private BatchSlave doProvision(int numExecutors) 
             throws Descriptor.FormException, IOException {
-        String name = "SGE_Cloud_" +
-            UUID.randomUUID().toString().replace('-', '_');
+        String name = "BatchSystem-" + UUID.randomUUID().toString();
+//        String name = "SGE_Cloud_" +
+//            UUID.randomUUID().toString().replace('-', '_');
         return new BatchSlave(name, this.label, numExecutors, hostname, port, 
                 username, password);
     }
