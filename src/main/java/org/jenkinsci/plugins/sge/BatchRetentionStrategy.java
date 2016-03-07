@@ -57,21 +57,22 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
      */
     @Override
     public long check(SlaveComputer computer) {
-
+    	final int MINUTES_TO_NEXT_CHECK = 1;
+    	
         if (computer.getNode() == null) {
-            return 1;
+            return MINUTES_TO_NEXT_CHECK;
         }
 
         if ((System.currentTimeMillis() - computer.getConnectTime())
                 < MINUTES.toMillis(idleTerminationMinutes)) {
-            return 1;
+            return MINUTES_TO_NEXT_CHECK;
         }
 
         if (computer.isOffline()) {
             LOGGER.log(Level.INFO, "Disconnecting offline computer {0}",
                     computer.getName());
             ((BatchSlave) (computer.getNode())).terminate();
-            return 1;
+            return MINUTES_TO_NEXT_CHECK;
         }
 
         if (computer.isIdle()) {
@@ -85,7 +86,7 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
                 ((BatchSlave) (computer.getNode())).terminate();
             }
         }
-        return 1;
+        return MINUTES_TO_NEXT_CHECK;
     }
 
     @Override
