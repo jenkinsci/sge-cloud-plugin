@@ -1,13 +1,5 @@
 This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.
 
-# Project Status
-
-`sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.
-
-`sge-cloud-plugin` is not yet an official Jenkins plugin, yet it is currently being used in industrial production on Wave Computing's Grid Engine compute farm.  It does work and we actively maintain it.
-
-While it might be nice to integrate `sge-cloud-plugin` and `lsf-cloud-plugin` into a single Jenkins plugin, this would be difficult to test, as few organizations have all batch systems installed.  For the sake of testability, it would probably be better to build multiple independent plugins from shared code.
-
 # Features
 
 This plugin adds a new type of build step *Run job on SGE* that submits batch jobs to SGE. The build step monitors the job status and periodically (default one minute) appends the progress to the build's *Console Output*. Should the build fail, errors and the exit status of the job also appear. If the job is terminated in Jenkins, it is also terminated in SGE.
@@ -125,3 +117,11 @@ In *Jenkins > Manage Jenkins > Configure System > SGE Cloud*, the *Maximum idle 
 # Environment Variables
 
 Jenkins [adds environment variables to the environment](https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables), and these are imported into the SGE job environment.  Then [SGE adds some more](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html).  There is just one variable name collision.  Before SGE overwrites Jenkins' `JOB_NAME`, the Jenkins value is saved in environment variable `JENKINS_JOB_NAME`.
+
+# Project History
+
+`sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.
+
+`sge-cloud-plugin` is not yet an official Jenkins plugin, yet it is currently being used in industrial production on Wave Computing's Grid Engine compute farm.  It does work and we actively maintain it.
+
+While it might be nice to integrate `sge-cloud-plugin` and `lsf-cloud-plugin` into a single Jenkins plugin, this would be difficult to test, as few organizations have all batch systems installed.  For the sake of testability, it would probably be better to build multiple independent plugins from shared code.
