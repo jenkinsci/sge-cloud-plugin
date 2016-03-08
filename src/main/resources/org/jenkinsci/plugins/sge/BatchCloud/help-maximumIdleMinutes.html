@@ -1,0 +1,28 @@
+<div>
+  <p>
+  When it starts a new job, Jenkins SGE Plugin tries to use an existing idle
+  slave.  If there are no idle slaves, a new slave is automatically
+  provisioned.</p>
+  <p>
+  When things are less busy, idle slaves are terminated after being idle for the
+  <em>Maximum idle time</em> specified here.</p>
+  <p>
+  Each project has a <em>Workspace</em> button that you can use to view the
+  project workspace files in your web browser.  This handy feature relies on the
+  slave that executed the job.  If the slave is gone, the workspace can no
+  longer be viewed via the Jenkins web interface.  If this happens often,
+  consider increasing the <em>Maximum idle time</em>.</p>
+  <p>
+  Note that the <em>Maximum idle time</em> applies only to newly provisioned
+  slaves.  Existing slaves retain the maximum idle time that was in effect when
+  they were provisioned.</p>
+  <p>
+  Handy conversions:
+  <ul>
+  <li>1440 minutes = 1 day</li>
+  <li>2880 minutes = 2 days</li>
+  <li>4320 minutes = 3 days</li>
+  <li>5760 minutes = 4 days</li>
+  </ul>
+  </p>  
+</div>

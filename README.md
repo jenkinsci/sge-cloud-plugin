@@ -4,7 +4,7 @@ This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system
 
 `sge-cloud-plugin` was forked from [lsf-cloud-plugin](https://github.com/jenkinsci/lsf-cloud-plugin) and modified to work with SGE instead of LSF.
 
-`sge-cloud-plugin` is not yet an official Jenkins plugin, yet it is currently being used in industrial production on Wave Computing's Grid Engine compute farm.  It does work and we are maintaining it.
+`sge-cloud-plugin` is not yet an official Jenkins plugin, yet it is currently being used in industrial production on Wave Computing's Grid Engine compute farm.  It does work and we actively maintain it.
 
 While it might be nice to integrate `sge-cloud-plugin` and `lsf-cloud-plugin` into a single Jenkins plugin, this would be difficult to test, as few organizations have all batch systems installed.  For the sake of testability, it would probably be better to build multiple independent plugins from shared code.
 
@@ -31,10 +31,6 @@ Install the prerequisite plugins:
     mvn install     # Sometimes 'mvn clean install' works better
 
 In *Manage Jenkins > Plugin Manager*, select the *Advanced* tab.  Use *Upload Plugin* to upload the plugin file `sge-cloud-plugin/target/sge-cloud.hpi`to Jenkins.
-
-## Incompatabilities
-
-The Jenkins SGE Plugin is incompatable with Jenkins views.  If non-default views are defined, it becomes impossible to view the project's workspace.  This is discussed further in issue #1.
 
 # Set Up Jenkins
 
@@ -73,7 +69,7 @@ If you prefer that your job fail and halt upon the first nonzero exit status, us
 
 ## Additional qsub Options
 
-So that you can see the `qsub` command used to submit jobs, the SGE Plugin prints the qsub command to the Jenkins job *Console Output*:
+So that you can see the `qsub` command that was used to submit jobs, the SGE Plugin prints the qsub command to the Jenkins job *Console Output*:
 
     Submitting SGE job using the command:
         "$SGE_BIN/qsub" ...    # Options not shown in docs because they will undoubtably be out-of-date
@@ -119,6 +115,12 @@ Exit status above 128 indicates that a signal terminated the job.  See the wiki 
 Finally, when the Jenkins SGE plugin could not even submit the job to SGE, the job is given the state:
 
 * "J", for Jenkins SGE plugin failure to submit the job
+
+# Viewing the Job Workspace
+
+Each project has a *Workspace* button that you can use to view the project workspace files in your web browser.  This handy feature relies on the slave that executed the job.  SGE slaves are are reused and if kept busy they can live a long and productive life.  However, slaves left idle for an extended time are deleted.  Once the slave is gone, the *Workspace* button will no longer work.  Then the files can only be viewed using other methods like the command line.
+
+In *Jenkins > Manage Jenkins > Configure System > SGE Cloud*, the *Maximum idle time* field controls how long idle slaves are retained.  If you find that slaves disappear while you still want to view the workspace, increase  *Maximum idle time*.
 
 # Environment Variables
 

@@ -3,6 +3,7 @@
 The MIT License
 
 Copyright 2015 Laisvydas Skurevicius.
+Copyright 2016 Wave Computing, Inc. Author John McGehee
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,19 +27,22 @@ THE SOFTWARE.
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" 
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:entry title="Cloud Name" field="cloudName">
+    <f:entry title="SGE cluster name" field="cloudName">
         <f:textbox/>
     </f:entry>
-    <f:entry title="SGE queue type" field="queueType">
+    <f:entry title="SGE queue name" field="queueType">
         <f:textbox/>
     </f:entry>
-    <f:entry title="Label" field="label">
+    <f:entry title="Jenkins slave label" field="label">
         <f:textbox clazz="required"/>
     </f:entry>
-    <f:entry title="Host name" field="hostname">
+    <f:entry title="Maximum idle time (minutes)" field="maximumIdleMinutes">
+        <f:textbox clazz="required" default="1440"/>
+    </f:entry>
+    <f:entry title="SGE submit host name" field="hostname">
         <f:textbox clazz="required"/>
     </f:entry>
-    <f:entry title="Port" field="port">
+    <f:entry title="SSH port" field="port">
         <f:textbox clazz="required" default="22"/>
     </f:entry>
     <f:entry title="User name" field="username">

@@ -53,6 +53,8 @@ public class BatchCloud extends Cloud {
     private String queueType;
     // The label that the cloud is associated with
     private String label;
+    // Slaves idle this many minutes will be terminated
+    private int maximumIdleMinutes;
     // Host name of the slave computer
     private String hostname;
     private int port = 22;
@@ -65,11 +67,13 @@ public class BatchCloud extends Cloud {
 
     @DataBoundConstructor
     public BatchCloud(String cloudName, String queueType, String label,
-            String hostname, int port, String username, String password) {
+    		int maximumIdleMinutes, String hostname, int port, String username,
+    		String password) {
         super(cloudName);
         this.cloudName = cloudName;
         this.queueType = queueType;
         this.label = label;
+        this.maximumIdleMinutes = maximumIdleMinutes;
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -108,8 +112,8 @@ public class BatchCloud extends Cloud {
             throws Descriptor.FormException, IOException {
         String name = this.cloudName + "_" + this.queueType  + "_"
         		+ UUID.randomUUID().toString().replace('-', '_');
-        return new BatchSlave(name, this.label, numExecutors, hostname, port, 
-                username, password);
+        return new BatchSlave(name, this.label, numExecutors,
+        		this.maximumIdleMinutes, hostname, port, username, password);
     }
 
     /**

@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-  This plugin is an integration of the SGE batch system to Jenkins.
+  This plugin allows Jenkins to submit jobs to the SGE batch system.
 </div>

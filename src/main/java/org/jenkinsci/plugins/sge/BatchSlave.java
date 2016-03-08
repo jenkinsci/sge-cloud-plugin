@@ -53,6 +53,7 @@ public class BatchSlave extends Slave {
     public BatchSlave(String name,
             String label,
             int numExecutors,
+            int maximumIdleMinutes,
             String hostName,
             int port,
             String userName,
@@ -65,7 +66,7 @@ public class BatchSlave extends Slave {
                 label,
                 new SSHLauncher(hostName, port, userName, 
                         Secret.toString(password), "", ""),
-                new BatchRetentionStrategy(idleTerminationMinutes),
+                new BatchRetentionStrategy(maximumIdleMinutes),
                 Collections.<NodeProperty<?>>emptyList());
         LOGGER.log(Level.INFO, "Constructing SGE slave {0}", name);
     }
