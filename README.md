@@ -1,4 +1,4 @@
-This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.
+This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.  Both the open source version of SGE 2011.11 and the commercial Univa Grid Engine (UGE) 8.3.1.
 
 # Features
 
@@ -28,12 +28,27 @@ In *Manage Jenkins > Plugin Manager*, select the *Advanced* tab.  Use *Upload Pl
 
 In SGE, add your Jenkins master host as an SGE submit host.
 
-In *Manage Jenkins > Configure System*, add *Environment Variables*:
+In *Manage Jenkins > Configure System*, add *Environment Variables*:
 
-* Name `SGE_ROOT` value `/path/to/sge`
-* Name `SGE_BIN` value `/path/to/sge/bin/linux-x64`
+* For open source SGE:
 
-There are various other [ways to add environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above is one of the most dependable.
+  Name | Value
+  -----|------
+  `SGE_ROOT` | `/path/to/sge`
+  `SGE_BIN` | `/path/to/sge/bin/linux-x64`
+
+* For commercial UGE:
+
+  Name | Value
+  -----|------
+  `SGE_ROOT` | `/path/to/uge`
+  `SGE_BIN` | `/path/to/uge/bin/lx-amd64`
+  `SGE_CELL` | Your cell name
+  `SGE_CLUSTER_NAME` | Your cluster name
+  `SGE_EXECD_PORT` | `64455`
+  `SGE_QMASTER_PORT` | `64444`
+
+There are various other [ways to add Jenkins environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above is one of the most dependable.
 
 In *Manage Jenkins > Configure System*, add a new cloud of type *SGE Cloud*.  Fill in the required information for the newly created cloud.
 
