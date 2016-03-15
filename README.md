@@ -79,7 +79,7 @@ Now, when Jenkins runs the project, it will run on the *SGE Cloud* that has the 
 By default, the exit status of the last command determines the success or failure of the build step.  For example, the following script would be inappropriately considered a success:
 
     ls /nonexistent    # Error, exit status 2
-    echo "This echo command succeeds with exit status 0"
+    echo "This echo command succeeds with exit status 0 even with the error on the previous line"
 
 If you prefer that your job fail and halt upon the first nonzero exit status, use the [Bash -e option](http://www.tldp.org/LDP/abs/html/options.html).  The following script will fail upon the first error:
 
