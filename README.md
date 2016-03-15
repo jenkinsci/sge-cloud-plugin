@@ -1,4 +1,4 @@
-This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.  Both the open source version of SGE 2011.11 and the commercial Univa Grid Engine (UGE) 8.3.1.
+This Jenkins plugin submits batch jobs to the Sun Grid Engine (SGE) batch system.  Both the open source version of SGE 2011.11 and the commercial [Univa](http://http://www.univa.com/) Grid Engine (UGE) 8.3.1 are supported.
 
 # Features
 
