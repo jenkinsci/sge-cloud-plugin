@@ -24,9 +24,13 @@ Install the prerequisite plugins:
 
 In *Manage Jenkins > Plugin Manager*, select the *Advanced* tab.  Use *Upload Plugin* to upload the plugin file `sge-cloud-plugin/target/sge-cloud.hpi`to Jenkins.
 
-# Set Up Jenkins
+# Configure SGE
 
 In SGE, add your Jenkins master host as an SGE submit host.
+
+# Configure Jenkins
+
+## Set Environment Variables
 
 In *Manage Jenkins > Configure System*, add *Environment Variables*:
 
@@ -49,6 +53,16 @@ In *Manage Jenkins > Configure System*, add *Environment Variables*:
   `SGE_QMASTER_PORT` | `64444`
 
 There are various other [ways to add Jenkins environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above is one of the most dependable.
+
+The SGE error message:
+
+```
+Unable to initialize environment because of error: cell directory "/path/to/sge/default" doesn't exist
+```
+
+means that `SGE_CELL` is undefined (it defaults to `default`).
+
+## Create the Cloud
 
 In *Manage Jenkins > Configure System*, add a new cloud of type *SGE Cloud*.  Fill in the required information for the newly created cloud.
 
