@@ -52,7 +52,7 @@ In *Manage Jenkins > Configure System*, add *Environment Variables*:
   `SGE_EXECD_PORT` | `64455`
   `SGE_QMASTER_PORT` | `64444`
 
-There are various other [ways to add Jenkins environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above is one of the most dependable.
+There are various other [ways to add Jenkins environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above method is one of the most dependable.
 
 The SGE error message:
 
