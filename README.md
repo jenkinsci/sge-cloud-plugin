@@ -109,7 +109,7 @@ There is no such `qsub` command line option `SOME_COMMAND`, so you get the unhel
 
 # Job States
 
-## Unfinished Jobs
+## Jobs Not Yet Finished
 
 The [qstat man page](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qstat.html) describes the following job states (job status) defined in SGE.  Each state is a string whose first character is most meaningful:
 
