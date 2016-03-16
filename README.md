@@ -46,11 +46,13 @@ In *Manage Jenkins > Configure System*, add *Environment Variables*:
   Name | Value
   -----|------
   `SGE_ROOT` | `/path/to/uge`
-  `SGE_BIN` | `/path/to/uge/bin/lx-amd64`
+  `SGE_BIN` | `/path/to/uge/bin/lx-amd64` or `.../darwin-x64` or `.../win-x86` 
   `SGE_CELL` | Your cell name
   `SGE_CLUSTER_NAME` | Your cluster name
   `SGE_EXECD_PORT` | `64455`
   `SGE_QMASTER_PORT` | `64444`
+
+### Notes on Environment Variables
 
 There are various other [ways to add Jenkins environment variables](http://stackoverflow.com/questions/5818403/jenkins-hudson-environment-variables/), but the above method is one of the most dependable.
 
