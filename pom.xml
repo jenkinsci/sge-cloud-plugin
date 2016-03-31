@@ -11,7 +11,7 @@
   
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>sge-cloud-plugin</artifactId>
-  <version>1.16</version>
+  <version>1.17-SNAPSHOT</version>
   <packaging>hpi</packaging>
   
   <name>Jenkins SGE Plugin</name>
@@ -36,7 +36,7 @@
     <connection>scm:git:ssh://github.com/jenkinsci/sge-cloud-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/sge-cloud-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/sge-cloud-plugin</url>
-    <tag>sge-cloud-plugin-1.16</tag>
+    <tag>sge-cloud-plugin-1.15</tag>
   </scm>
   
   <repositories>
