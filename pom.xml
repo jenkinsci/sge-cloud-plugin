@@ -1,95 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>plugin</artifactId>
-    <version>1.600</version>
-    <relativePath />
-  </parent>
-  
-  <groupId>org.jenkins-ci.plugins</groupId>
-  <artifactId>sge-cloud-plugin</artifactId>
-  <version>1.18-SNAPSHOT</version>
-  <packaging>hpi</packaging>
-  
-  <name>Jenkins SGE Plugin</name>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/SGE+Cloud+Plugin</url>
+	<parent>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>1.600</version>
+		<relativePath />
+	</parent>
 
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://opensource.org/licenses/MIT</url>
-    </license>
-  </licenses>
-  
-  <developers>
-    <developer>
-      <id>jmcgeheeiv</id>
-      <name>John McGehee</name>
-      <email>jmcgeheeiv@users.noreply.github.com</email>
-    </developer>
-  </developers>
-  
-  <scm>
-    <connection>scm:git:ssh://github.com/jenkinsci/sge-cloud-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jenkinsci/sge-cloud-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/sge-cloud-plugin</url>
-    <tag>sge-cloud-plugin-1.17</tag>
-  </scm>
-  
-  <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </repository>
-  </repositories>
-  
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  
-    <dependencies>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>ssh-slaves</artifactId>
-            <version>1.9</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>copy-to-slave</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
-    <issueManagement>
-        <url>https://github.com/jenkinsci/sge-cloud-plugin/issues</url>
-        <system>GitHub</system>
-    </issueManagement>
-    <organization>
-        <name>Wave Computing</name>
-        <url>http://www.wavecomp.com</url>
-    </organization>
-    <properties>
-        <jenkins.version>1.609.1</jenkins.version>
-    </properties>
-    <description>This Jenkins plugin submits jobs to the Sun Grid Engine (SGE) batch system. Both the open source version of SGE and the commercial Univa Grid Engine (UGE) are supported.</description>
+	<groupId>org.jenkins-ci.plugins</groupId>
+	<artifactId>sge-cloud-plugin</artifactId>
+	<version>1.18-SNAPSHOT</version>
+	<packaging>hpi</packaging>
+
+	<name>Jenkins SGE Plugin</name>
+	<url>https://wiki.jenkins-ci.org/display/JENKINS/SGE+Cloud+Plugin</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jmcgeheeiv</id>
+			<name>John McGehee</name>
+			<email>jmcgeheeiv@users.noreply.github.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:ssh://github.com/jenkinsci/sge-cloud-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/sge-cloud-plugin.git</developerConnection>
+		<url>https://github.com/jenkinsci/sge-cloud-plugin</url>
+		<tag>sge-cloud-plugin-1.17</tag>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>repo.jenkins-ci.org</id>
+			<url>http://repo.jenkins-ci.org/public/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repo.jenkins-ci.org</id>
+			<url>http://repo.jenkins-ci.org/public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>ssh-slaves</artifactId>
+			<version>1.9</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>copy-to-slave</artifactId>
+			<version>1.4.3</version>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
+	<issueManagement>
+		<url>https://github.com/jenkinsci/sge-cloud-plugin/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
+	<organization>
+		<name>Wave Computing</name>
+		<url>http://www.wavecomp.com</url>
+	</organization>
+	<properties>
+		<jenkins.version>1.609.1</jenkins.version>
+	</properties>
+	<description>This Jenkins plugin submits jobs to the Sun Grid Engine (SGE) batch system. Both the open source version of SGE and the commercial Univa Grid Engine (UGE) are supported.</description>
 	<profiles>
-	    <profile>
-	        <id>disable-java8-doclint</id>
-	        <activation>
-	            <jdk>[1.8,)</jdk>
-	        </activation>
-	        <properties>
-	            <!-- Disable Javadoc Lint because so many @param, @return,
-	                 @throws have no explanation, making the build fail. -->
-	            <additionalparam>-Xdoclint:none</additionalparam>
-	        </properties>
-	    </profile>
+		<profile>
+			<id>disable-java8-doclint</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<!-- Disable Javadoc Lint because so many @param, @return, @throws have 
+					no explanation, making the build fail. -->
+				<additionalparam>-Xdoclint:none</additionalparam>
+			</properties>
+		</profile>
 	</profiles>
+	<build>
+		<plugins>
+		    <!-- Specify wagon version 2.10 per https://issues.jenkins-ci.org/browse/INFRA-588 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.6</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.wagon</groupId>
+						<artifactId>wagon-http</artifactId>
+						<version>2.10</version>
+						<type>jar</type>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 </project>
