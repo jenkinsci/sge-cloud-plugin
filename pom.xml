@@ -12,7 +12,7 @@
 
 	<groupId>org.jenkins-ci.plugins</groupId>
 	<artifactId>sge-cloud-plugin</artifactId>
-	<version>1.18-SNAPSHOT</version>
+	<version>1.19-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
 	<name>Jenkins SGE Plugin</name>
@@ -37,7 +37,7 @@
 		<connection>scm:git:ssh://github.com/jenkinsci/sge-cloud-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/sge-cloud-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/sge-cloud-plugin</url>
-		<tag>sge-cloud-plugin-1.17</tag>
+		<tag>sge-cloud-plugin-1.19</tag>
 	</scm>
 
 	<repositories>
@@ -79,7 +79,7 @@
 	<properties>
 		<jenkins.version>1.609.1</jenkins.version>
 	</properties>
-	<description>This Jenkins plugin submits jobs to the Sun Grid Engine (SGE) batch system. Both the open source version of SGE and the commercial Univa Grid Engine (UGE) are supported.</description>
+	<description>Submit jobs to the Sun Grid Engine (SGE), Oracle Grid Engine (OGE) or Univa Grid Engine (UGE)</description>
 	<profiles>
 		<profile>
 			<id>disable-java8-doclint</id>
