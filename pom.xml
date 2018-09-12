@@ -79,9 +79,6 @@
 		<name>Wave Computing</name>
 		<url>http://www.wavecomp.com</url>
 	</organization>
-	<properties>
-		<jenkins.version>1.609.1</jenkins.version>
-	</properties>
 	<description>Submit jobs to Sun Grid Engine (SGE), Oracle Grid Engine (OGE) or Univa Grid Engine (UGE)</description>
 	<profiles>
 		<profile>
