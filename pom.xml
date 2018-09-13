@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>sge-cloud-plugin</artifactId>
-    <version>1.22</version>
+    <version>1.22-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <jenkins.version>1.625</jenkins.version>
