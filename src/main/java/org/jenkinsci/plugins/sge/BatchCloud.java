@@ -82,7 +82,8 @@ public class BatchCloud extends Cloud {
 
     /**
      * Creates a slave when there is a running job with an appropriate label
-     *
+     */
+    /*
      * @param label
      * @param excessWorkload
      * @return
@@ -119,8 +120,8 @@ public class BatchCloud extends Cloud {
     /**
      * Checks if a jobs label matches the clouds label and determines if a slave
      * should be created.
-     *
-     * @param label
+     */
+    /* @param label
      * @return
      */
     @Override

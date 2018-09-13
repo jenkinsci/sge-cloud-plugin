@@ -24,15 +24,13 @@
  */
 package org.jenkinsci.plugins.sge;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.tasks.Shell;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -119,7 +117,7 @@ public class SGE extends BatchSystem {
         // Extract the job id
         copyFileToMaster.perform(build, launcher, fakeListener);
         BufferedReader fileReader = new BufferedReader(
-                new FileReader(masterWorkingDirectory + COMMUNICATION_FILE));
+                new InputStreamReader(new FileInputStream(masterWorkingDirectory + COMMUNICATION_FILE), "UTF-8"));
         // qsub prints, 'Your job jobId ("jobName") has been submitted'
         String line = fileReader.readLine();
         String jobId = QSUB_FAILED_JOB_ID;
@@ -227,10 +225,12 @@ public class SGE extends BatchSystem {
      * 
      * If `key` is not found, return `null`.
      */
+    @SuppressFBWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION",
+            justification="Do not particularly care about efficiency when building commands")
     private String getValueFromFile(String key)
             throws IOException, InterruptedException {
         BufferedReader fileReader = new BufferedReader(
-                new FileReader(masterWorkingDirectory + COMMUNICATION_FILE));
+                new InputStreamReader(new FileInputStream(masterWorkingDirectory + COMMUNICATION_FILE), "UTF-8"));
         String value = null;
         String line;
         while ((line = fileReader.readLine()) != null) {
@@ -327,12 +327,7 @@ public class SGE extends BatchSystem {
     public void printExitCode(String jobId)
             throws InterruptedException, IOException {
         String exitStatus = getFinishedJobExitStatus(jobId);
-        if (exitStatus != null) {
-            listener.getLogger().println("Exited with exit status " + exitStatus);
-        } else {
-            listener.getLogger().println(
-                    "Exited, but the exit status could not be found");
-        }
+        listener.getLogger().println("Exited with exit status " + exitStatus);
     }
 
     @Override

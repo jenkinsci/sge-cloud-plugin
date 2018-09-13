@@ -24,7 +24,6 @@
 package org.jenkinsci.plugins.sge;
 
 import hudson.Extension;
-import hudson.model.Descriptor;
 import hudson.model.Node;
 import hudson.model.Slave;
 import hudson.slaves.NodeProperty;
@@ -34,7 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import hudson.plugins.sshslaves.SSHLauncher;
 import hudson.util.Secret;
-import jenkins.model.Jenkins;
 
 /**
  * Provision a batch slave.  The workspace will remain available for viewing
@@ -47,8 +45,6 @@ public class BatchSlave extends Slave {
 
     private static final Logger LOGGER = Logger.getLogger(BatchSlave.class
             .getName());
-    
-    private static final int idleTerminationMinutes = 24 * 60; // 1 day
 
     public BatchSlave(String name,
             String label,
@@ -57,7 +53,7 @@ public class BatchSlave extends Slave {
             String hostName,
             int port,
             String userName,
-            Secret password) throws Descriptor.FormException, IOException {
+            Secret password) throws hudson.model.Descriptor.FormException, IOException {
         super(name,
                 "",
                 "jenkins",
@@ -71,13 +67,10 @@ public class BatchSlave extends Slave {
         LOGGER.log(Level.INFO, "Constructing SGE slave {0}", name);
     }
 
-    /**
-     * terminates the slave
-     */
     public void terminate() {
         LOGGER.log(Level.INFO, "Terminating slave {0}", getNodeName());
         try {
-            Jenkins.getInstance().removeNode(this);
+            BatchBuilder.getJenkinsInstance().removeNode(this);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to terminate SGE instance: "
                     + getInstanceId(), e);

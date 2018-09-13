@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
 
     // The amount of minutes until a slave is terminated when idle
-    public final int idleTerminationMinutes;
+    private final int idleTerminationMinutes;
 
     private static final Logger LOGGER = Logger
             .getLogger(BatchRetentionStrategy.class.getName());
@@ -50,7 +50,7 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
      * This method will be called periodically to allow this strategy to decide
      * whether to terminate the specified {@link hudson.model.Computer}.
      *
-     * @param c {@link hudson.model.Computer} for which this strategy is
+     * @param computer {@link hudson.model.Computer} for which this strategy is
      * assigned. This computer may be online or offline.
      * @return The number of minutes after which this strategy would like to be
      * checked again. The strategy may be rechecked earlier or later that this!
@@ -71,7 +71,7 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
         if (computer.isOffline()) {
             LOGGER.log(Level.INFO, "Disconnecting offline computer {0}",
                     computer.getName());
-            ((BatchSlave) (computer.getNode())).terminate();
+            terminateComputer(computer);
             return MINUTES_TO_NEXT_CHECK;
         }
 
@@ -83,10 +83,21 @@ public class BatchRetentionStrategy extends RetentionStrategy<SlaveComputer> {
             if (idleMilliseconds > MINUTES.toMillis(idleTerminationMinutes)) {
                 LOGGER.log(Level.INFO, "Disconnecting idle computer {0}",
                         computer.getName());
-                ((BatchSlave) (computer.getNode())).terminate();
+                terminateComputer(computer);
             }
         }
         return MINUTES_TO_NEXT_CHECK;
+    }
+
+    /** Terminate the slave node if it exists.
+     *
+     * @param computer Slave computer
+     */
+    private void terminateComputer(SlaveComputer computer) {
+        BatchSlave slave = (BatchSlave) computer.getNode();
+        if (slave != null) {
+            slave.terminate();
+        }
     }
 
     @Override

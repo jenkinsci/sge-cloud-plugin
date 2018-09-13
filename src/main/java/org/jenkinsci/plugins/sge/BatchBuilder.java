@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.sge;
 
 import com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier;
 import com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Util;
@@ -36,19 +37,18 @@ import hudson.slaves.Cloud;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.tasks.Shell;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import jenkins.model.Jenkins;
 import jenkins.util.BuildListenerAdapter;
@@ -70,25 +70,24 @@ public class BatchBuilder extends Builder {
     // the batch job script
     private String job;
     // the files that need to be downloaded after job completion
-    private String filesToDownload = "";
+    private String filesToDownload;
     // the destination path to which the files will be downloaded
     private String downloadDestination;
     // the files that need to be sent before executing the job
-    private String filesToSend = "";
+    private String filesToSend;
     // how often the status of the job should be checked
-    private float checkFrequencyMinutes = 1;
+    private float checkFrequencyMinutes;
     // names of the files that have been uploaded (separated by commas)
-    private String uploadedFiles = getUploadedFiles();
+    private String uploadedFiles;
     // configuration for checking if email should be sent
-    private boolean sendEmail = false;
+    private boolean sendEmail;
     // file name for the communication between master and slave
     private static final String COMMUNICATION_FILE = "output";
     // name of the file where the running job output is saved
     private static final String PROGRESS_FILE = "jobProgress";
     private String masterWorkingDirectory;
     private String slaveWorkingDirectory;
-
-    /**
+    /*
      * @param job
      * @param filesToDownload
      * @param downloadDestination
@@ -99,7 +98,8 @@ public class BatchBuilder extends Builder {
     @DataBoundConstructor
     public BatchBuilder(String job, String filesToDownload,
             String downloadDestination, String filesToSend,
-            float checkFrequencyMinutes, boolean sendEmail) {
+            float checkFrequencyMinutes, boolean sendEmail)
+            throws NullPointerException {
         this.job = job;
         this.filesToDownload = filesToDownload;
         this.downloadDestination = downloadDestination;
@@ -109,31 +109,26 @@ public class BatchBuilder extends Builder {
         this.sendEmail = sendEmail;
     }
 
+    /** Get the Jenkins singleton and throw a NullPointerException if it is `null`.
+     *
+     * @todo Some day this needs to be replaced by the newer, never-null `Jenkins.get()`.  But `Jenkins.get()` is
+     *       still too new (Sept 2018).
+     *
+     * @return Instance of class `Jenkins`
+     * @throws NullPointerException if Jenkins has not yet been started or has already been terminated
+     */
+    @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification="Use Jenkins.get() when it becomes available")
+    public static @Nonnull Jenkins getJenkinsInstance() throws NullPointerException {
+       return Objects.requireNonNull(Jenkins.getInstance(),
+                "Jenkins has not yet been started or has already been terminated");
+    }
+
     public String getJob() {
         return job;
     }
 
-    public String getFilesToDownload() {
-        return filesToDownload;
-    }
-
-    public float getCheckFrequencyMinutes() {
-        return checkFrequencyMinutes;
-    }
-
-    public String getFilesToSend() {
-        return filesToSend;
-    }
-
-    public String getDownloadDestination() {
-        return downloadDestination;
-    }
-
-    public boolean getSendEmail() {
-        return sendEmail;
-    }
-
-    /**
+    /*
      * This is where the interaction between Jenkins and SGE happens.
      *
      * @param build
@@ -143,11 +138,13 @@ public class BatchBuilder extends Builder {
      * @throws InterruptedException
      * @throws IOException
      */
+    @SuppressFBWarnings(value="OS_OPEN_STREAM",
+            justification="TODO: Fix this after qualifying the new plugin")
     @Override
     public boolean perform(AbstractBuild<?, ?> build,
             Launcher launcher, BuildListener listener)
             throws InterruptedException, IOException {
-        masterWorkingDirectory = Jenkins.getInstance().root.getAbsolutePath()
+        masterWorkingDirectory = getJenkinsInstance().root.getAbsolutePath()
                 + "/userContent/" + build.getProject().getName() + "/";
         BatchSystem batchSystem = new SGE(build, launcher,
                 listener, COMMUNICATION_FILE, masterWorkingDirectory);
@@ -197,8 +194,8 @@ public class BatchBuilder extends Builder {
                 countNumberOfLines.perform(build, launcher, fakeListener);
                 copyFileToMaster.perform(build, launcher, fakeListener);
                 BufferedReader fileReader = new BufferedReader(
-                        new FileReader(masterWorkingDirectory
-                                + COMMUNICATION_FILE));
+                        new InputStreamReader(new FileInputStream(masterWorkingDirectory + COMMUNICATION_FILE),
+                                StandardCharsets.UTF_8 ));
                 String first_word = fileReader.readLine();
                 // checks if command didn't fail and the result file exists
                 if (first_word == null) {
@@ -242,13 +239,13 @@ public class BatchBuilder extends Builder {
         return batchSystem.jobCompletedSuccessfully(jobStatus);
     }
 
-    /**
+    /*
      * prints the given output to console
      *
      * @param listener
      * @param output
      */
-    protected void printJobOutput(BuildListener listener, String output) {
+    private void printJobOutput(BuildListener listener, String output) {
         listener.getLogger().println("------------------------------------"
                 + "---------------JOB OUTPUT START------------------------"
                 + "---------------------------");
@@ -259,14 +256,16 @@ public class BatchBuilder extends Builder {
                 + "---------------------------");
     }
 
-    /**
+    /*
      * @param build
      * @return queue type from the cloud
      */
-    protected String getQueueType(AbstractBuild<?, ?> build) {
+    @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification="TODO: Fix this after qualifying the new plugin")
+    private String getQueueType(AbstractBuild<?, ?> build) {
         // finds the queue type by searching through the clouds 
         // with the associated label
-        for (Cloud cloud : Jenkins.getInstance().clouds) {
+        for (Cloud cloud : getJenkinsInstance().clouds) {
             if (cloud instanceof BatchCloud && cloud.canProvision(
                     build.getProject().getAssignedLabel())) {
                 return ((BatchCloud) cloud).getQueueType();
@@ -275,7 +274,7 @@ public class BatchBuilder extends Builder {
         return null;
     }
 
-    /**
+    /*
      * @param build
      * @param launcher
      * @param listener
@@ -283,7 +282,9 @@ public class BatchBuilder extends Builder {
      * @throws InterruptedException
      * @throws IOException
      */
-    protected String getSlaveWorkingDirectory(AbstractBuild<?, ?> build,
+    @SuppressFBWarnings(value="OS_OPEN_STREAM",
+            justification="TODO: Fix this after qualifying the new plugin")
+    private String getSlaveWorkingDirectory(AbstractBuild<?, ?> build,
             Launcher launcher, BuildListener listener)
             throws InterruptedException, IOException {
         Shell shell = new Shell("pwd > " + COMMUNICATION_FILE);
@@ -293,11 +294,12 @@ public class BatchBuilder extends Builder {
                         masterWorkingDirectory, true);
         copyFileToMaster.perform(build, launcher, listener);
         BufferedReader br = new BufferedReader(
-                new FileReader(masterWorkingDirectory + COMMUNICATION_FILE));
+                new InputStreamReader(new FileInputStream(masterWorkingDirectory + COMMUNICATION_FILE),
+                        StandardCharsets.UTF_8 ));
         return br.readLine();
     }
 
-    /**
+    /*
      * sends the selected files to the slave machine
      *
      * @param build
@@ -307,7 +309,7 @@ public class BatchBuilder extends Builder {
      * @throws IOException
      * @throws InterruptedException
      */
-    protected String sendFiles(AbstractBuild<?, ?> build, Launcher launcher,
+    private String sendFiles(AbstractBuild<?, ?> build, Launcher launcher,
             BuildListener listener)
             throws IOException, InterruptedException {
         String sendFilesShellCommands = "";
@@ -346,7 +348,7 @@ public class BatchBuilder extends Builder {
         return sendFilesShellCommands;
     }
 
-    /**
+    /*
      * downloads the selected files from slave to master
      *
      * @param build
@@ -355,7 +357,7 @@ public class BatchBuilder extends Builder {
      * @throws InterruptedException
      * @throws IOException
      */
-    protected void downloadFiles(AbstractBuild<?, ?> build, Launcher launcher,
+    private void downloadFiles(AbstractBuild<?, ?> build, Launcher launcher,
             BuildListener listener) throws InterruptedException, IOException {
         if (!filesToDownload.isEmpty()) {
             listener.getLogger().println();
@@ -377,7 +379,7 @@ public class BatchBuilder extends Builder {
         }
     }
 
-    /**
+    /*
      * sends the job script file to slave
      *
      * @param build
@@ -388,7 +390,7 @@ public class BatchBuilder extends Builder {
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void sendJobToSlave(AbstractBuild<?, ?> build, Launcher launcher,
+    private void sendJobToSlave(AbstractBuild<?, ?> build, Launcher launcher,
             BuildListener listener, String sendFilesShellCommands,
             String jobFileName) throws IOException, InterruptedException {
         // stores the job in a script file
@@ -413,7 +415,7 @@ public class BatchBuilder extends Builder {
         copyToSlave.setUp(build, launcher, listener);
     }
 
-    /**
+    /*
      * sets the correct permission on the job file
      *
      * @param build
@@ -422,7 +424,7 @@ public class BatchBuilder extends Builder {
      * @param jobFileName
      * @throws InterruptedException
      */
-    protected void setPermissionOnJobFile(AbstractBuild<?, ?> build,
+    private void setPermissionOnJobFile(AbstractBuild<?, ?> build,
             Launcher launcher, BuildListener listener, String jobFileName)
             throws InterruptedException {
         Shell shell = new Shell("#!/bin/bash +x\n chmod 755 "
@@ -430,7 +432,7 @@ public class BatchBuilder extends Builder {
         shell.perform(build, launcher, listener);
     }
 
-    /**
+    /*
      * cleans up the temporary files in the master and the slave
      *
      * @param build
@@ -440,7 +442,9 @@ public class BatchBuilder extends Builder {
      * @param jobId
      * @throws InterruptedException
      */
-    protected void cleanUpFiles(AbstractBuild<?, ?> build, Launcher launcher,
+    @SuppressFBWarnings(value={"RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", "SBSC_USE_STRINGBUFFER_CONCATENATION"},
+            justification="TODO: Fix this after qualifying the new plugin")
+    private void cleanUpFiles(AbstractBuild<?, ?> build, Launcher launcher,
             BuildListener listener, String jobFileName, String jobId)
             throws InterruptedException {
         String filesToDelete = jobFileName + " "
@@ -470,14 +474,16 @@ public class BatchBuilder extends Builder {
         return (DescriptorImpl) super.getDescriptor();
     }
 
-    public String getUploadedFiles() {
+    private String getUploadedFiles() {
         return getDescriptor().getUploadedFileNames();
     }
 
     @Extension
+    @SuppressFBWarnings(value="DLS_DEAD_LOCAL_STORE",
+            justification="TODO: Fix this after qualifying the new plugin")
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-        public Set<File> uploadedFiles = new HashSet<File>();
+        private Set<File> uploadedFiles = new HashSet<File>();
 
         public Set<File> getUploadedFiles() {
             return uploadedFiles;
@@ -498,20 +504,19 @@ public class BatchBuilder extends Builder {
                 @QueryParameter String job)
                 throws IOException, ServletException {
             try {
-                AbstractProject prj = (AbstractProject) 
-                        Jenkins.getInstance().getItemByFullName(job);
+                AbstractProject prj = (AbstractProject) getJenkinsInstance().getItemByFullName(job);
                 ServletFileUpload upload
                         = new ServletFileUpload(new DiskFileItemFactory());
                 FileItem fileItem = req.getFileItem("uploadedFile");
                 String fileName = Util.getFileName(fileItem.getName());
-                File f = new File(Jenkins.getInstance().root.getAbsolutePath()
+                File f = new File(getJenkinsInstance().root.getAbsolutePath()
                         + "/userContent/" + job + "/" + fileName);
                 System.out.println(f.getPath());
                 fileItem.write(f);
                 fileItem.delete();
                 uploadedFiles.add(f);
                 save();
-            } catch (FileNotFoundException ex) {
+            // } catch (FileNotFoundException ex) {
             } catch (Exception ex) {
                 Logger.getLogger(BatchBuilder.class.getName())
                         .log(Level.SEVERE, null, ex);
@@ -525,6 +530,8 @@ public class BatchBuilder extends Builder {
             }
         }
 
+        @SuppressFBWarnings(value="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE",
+                justification="TODO: Fix this after qualifying the new plugin")
         public void doDeleteFile(StaplerRequest req, StaplerResponse rsp,
                 @QueryParameter String job, @QueryParameter String file)
                 throws IOException, ServletException {
@@ -544,7 +551,9 @@ public class BatchBuilder extends Builder {
             rsp.sendRedirect(redirect);
         }
 
-        public String getUploadedFileNames() {
+        @SuppressFBWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION",
+                justification="Do not particularly care about efficiency when building commands")
+        private String getUploadedFileNames() {
             String files = "";
             for (File f : uploadedFiles) {
                 files = files + f.getName() + ",";
