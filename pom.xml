@@ -19,7 +19,7 @@
         <findbugs.threshold>High</findbugs.threshold> -->
         <findbugs.excludeFilterFile>${project.basedir}/src/findbugs/findbugs-excludes.xml</findbugs.excludeFilterFile>
     </properties>
-    <name>Jenkins SGE Plugin</name>
+    <name>SGE Cloud Plugin</name>
     <description>Submit jobs to Sun Grid Engine (SGE), Oracle Grid Engine (OGE) or Univa Grid Engine (UGE)</description>
     <licenses>
         <license>
