@@ -2,6 +2,7 @@
  * The MIT License
  *
  * Copyright 2015 Laisvydas Skurevicius.
+ * Copyright 2019 Wave Computing, John MdVehee
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +24,6 @@
  */
 package org.jenkinsci.plugins.sge;
 
-import com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier;
-import com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.Launcher;
@@ -64,6 +63,7 @@ import org.kohsuke.stapler.StaplerResponse;
 /**
  *
  * @author Laisvydas Skurevicius
+ * @author John McGehee
  */
 public class BatchBuilder extends Builder {
 
@@ -149,8 +149,7 @@ public class BatchBuilder extends Builder {
         BatchSystem batchSystem = new SGE(build, launcher,
                 listener, COMMUNICATION_FILE, masterWorkingDirectory);
         CopyToMasterNotifier copyFileToMaster
-                = new CopyToMasterNotifier(COMMUNICATION_FILE, "",
-                        true, masterWorkingDirectory, true);
+                = new CopyToMasterNotifier(COMMUNICATION_FILE, masterWorkingDirectory);
         String jobStatus = "";
         // randomly generated job script name
         String jobFileName = "JOB-" + UUID.randomUUID().toString();
@@ -290,8 +289,7 @@ public class BatchBuilder extends Builder {
         Shell shell = new Shell("pwd > " + COMMUNICATION_FILE);
         shell.perform(build, launcher, listener);
         CopyToMasterNotifier copyFileToMaster
-                = new CopyToMasterNotifier(COMMUNICATION_FILE, "", true,
-                        masterWorkingDirectory, true);
+                = new CopyToMasterNotifier(COMMUNICATION_FILE, masterWorkingDirectory);
         copyFileToMaster.perform(build, launcher, listener);
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(masterWorkingDirectory + COMMUNICATION_FILE),
@@ -369,8 +367,7 @@ public class BatchBuilder extends Builder {
                 is_default = true;
             }
             CopyToMasterNotifier copyFilesToMaster
-                    = new CopyToMasterNotifier(filesToDownload, "",
-                            true, downloadDestination, true);
+                    = new CopyToMasterNotifier(filesToDownload, downloadDestination);
             copyFilesToMaster.perform(build, launcher, listener);
             // resets the download destination
             if (is_default) {

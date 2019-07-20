@@ -2,6 +2,7 @@
  * The MIT License
  *
  * Copyright 2015 Laisvydas Skurevicius.
+ * Copyright (c) 2019, Wave Computing, Inc. John McGehee
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +24,6 @@
  */
 package org.jenkinsci.plugins.sge;
 
-import com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -32,6 +32,7 @@ import java.io.IOException;
 /**
  *
  * @author Laisvydas Skurevicius
+ * @author John McGehee
  */
 public abstract class BatchSystem {
 
@@ -47,8 +48,7 @@ public abstract class BatchSystem {
             BuildListener listener, String COMMUNICATION_FILE, 
             String masterWorkingDirectory) {
         this.COMMUNICATION_FILE = COMMUNICATION_FILE;
-        this.copyFileToMaster = new CopyToMasterNotifier(COMMUNICATION_FILE,
-                "", true, masterWorkingDirectory, true);
+        this.copyFileToMaster = new CopyToMasterNotifier(COMMUNICATION_FILE, masterWorkingDirectory);
         this.build = build;
         this.launcher = launcher;
         this.listener = listener;
