@@ -24,6 +24,7 @@
  */
 package org.jenkinsci.plugins.sge;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -52,6 +53,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jvnet.localizer.Localizable;
 import org.jvnet.localizer.ResourceBundleHolder;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import javax.annotation.Nonnull;
 
 /**
  * This class is forked from the Jenkins Copy To Slave plugin. The Copy To Slave plugin is deprecated because it can
@@ -99,7 +102,7 @@ public class CopyToMasterNotifier extends Notifier {
             String includes = env.expand(getIncludes());
             String excludes = env.expand(getExcludes());
 
-            listener.getLogger().printf("[copy-to-slave] Copying '%s', excluding %s, from '%s' on '%s' to '%s' on the master.\n",
+            listener.getLogger().printf("[copy-to-slave] Copying '%s', excluding %s, from '%s' on '%s' to '%s' on the master.%n",
                     includes, StringUtils.isBlank(excludes) ? "nothing" : '\'' + excludes + '\'', projectWorkspaceOnSlave.toURI(),
                     Computer.currentComputer().getNode(), destinationFilePath.toURI());
 
@@ -113,12 +116,12 @@ public class CopyToMasterNotifier extends Notifier {
         return true;
     }
 
-    public static FilePath getProjectWorkspaceOnMaster(AbstractBuild build, PrintStream logger) {
-        return getProjectWorkspaceOnMaster(build, build.getProject(), logger);
-    }
 
-    private static FilePath getProjectWorkspaceOnMaster(AbstractBuild build, AbstractProject project, PrintStream logger) {
-        FilePath projectWorkspaceOnMaster;
+    @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification="The logic and assertion protect against returning null")
+    public static @Nonnull FilePath getProjectWorkspaceOnMaster(AbstractBuild build, PrintStream logger) {
+        final AbstractProject project = build.getProject();
+        FilePath projectWorkspaceOnMaster = null;
 
         // free-style projects
         if(project instanceof FreeStyleProject) {
@@ -146,6 +149,8 @@ public class CopyToMasterNotifier extends Notifier {
             }
             projectWorkspaceOnMaster = new FilePath(new File(pathOnMaster));
         }
+
+        assert projectWorkspaceOnMaster != null;
 
         try {
             // create the workspace if it doesn't exist yet

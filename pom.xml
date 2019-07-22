@@ -63,12 +63,6 @@
             <version>1.9</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>copy-to-slave</artifactId>
-            <version>1.4.3</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
     <issueManagement>
         <url>https://github.com/jenkinsci/sge-cloud-plugin/issues</url>
