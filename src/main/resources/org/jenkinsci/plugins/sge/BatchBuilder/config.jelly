@@ -3,6 +3,7 @@
 The MIT License
 
 Copyright 2015 Laisvydas Skurevicius.
+Copyright 2019 Wave Computing, Inc. John McGehee
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,15 +35,6 @@ THE SOFTWARE.
             <j:set var="url" 
                    value="${rootURL}/descriptor/org.jenkinsci.plugins.sge.BatchBuilder/startUpload?job=${it.fullName}&amp;files=${instance.uploadedFiles}"/>
             <iframe src="${url}" frameborder="0" width="100%"/> 
-        </f:entry>
-        <f:entry title="Files to send" field="filesToSend">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="Files to download" field="filesToDownload">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="Download destination" field="downloadDestination">
-            <f:textbox/>
         </f:entry>
         <f:entry title="Status check frequency" field="checkFrequencyMinutes">
             <f:textbox default="1"/>

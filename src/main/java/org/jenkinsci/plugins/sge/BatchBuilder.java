@@ -70,11 +70,11 @@ public class BatchBuilder extends Builder {
     // the batch job script
     private String job;
     // the files that need to be downloaded after job completion
-    private String filesToDownload;
+    private static String filesToDownload = "";
     // the destination path to which the files will be downloaded
-    private String downloadDestination;
+    private static String downloadDestination = "";
     // the files that need to be sent before executing the job
-    private String filesToSend;
+    private static String filesToSend = "";
     // how often the status of the job should be checked
     private float checkFrequencyMinutes;
     // names of the files that have been uploaded (separated by commas)
@@ -96,26 +96,24 @@ public class BatchBuilder extends Builder {
      * @param sendEmail
      */
     @DataBoundConstructor
-    public BatchBuilder(String job, String filesToDownload,
-            String downloadDestination, String filesToSend,
-            float checkFrequencyMinutes, boolean sendEmail)
+    public BatchBuilder(String job, float checkFrequencyMinutes,
+                        boolean sendEmail)
             throws NullPointerException {
         this.job = job;
-        this.filesToDownload = filesToDownload;
-        this.downloadDestination = downloadDestination;
-        this.filesToSend = filesToSend;
         this.checkFrequencyMinutes = checkFrequencyMinutes;
         this.uploadedFiles = getUploadedFiles();
         this.sendEmail = sendEmail;
     }
 
-    /** Get the Jenkins singleton and throw a NullPointerException if it is `null`.
+    /** Get the Jenkins singleton and throw a NullPointerException if it is
+     * `null`.
      *
-     * @todo Some day this needs to be replaced by the newer, never-null `Jenkins.get()`.  But `Jenkins.get()` is
-     *       still too new (Sept 2018).
+     * @todo Some day this needs to be replaced by the newer, never-null
+     *       `Jenkins.get()`.  But `Jenkins.get()` is still too new (Sept 2018).
      *
      * @return Instance of class `Jenkins`
-     * @throws NullPointerException if Jenkins has not yet been started or has already been terminated
+     * @throws NullPointerException if Jenkins has not yet been started or has
+     *         already been terminated
      */
     @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
             justification="Use Jenkins.get() when it becomes available")

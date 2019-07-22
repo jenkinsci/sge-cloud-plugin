@@ -28,8 +28,13 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
+import hudson.model.Computer;
+import hudson.model.FreeStyleProject;
 import hudson.model.Hudson.MasterComputer;
+import hudson.model.TopLevelItem;
 import hudson.slaves.SlaveComputer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -50,7 +55,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * This class is forked from the Jenkins Copy To Slave plugin. The Copy To Slave plugin is deprecated because it can
- * copy arbitrary files. Here, it has been modified so that it can only copy file COMMUNICATION_FILE.
+ * copy arbitrary files.
  *
  * @author Romain Seguy (http://openromain.blogspot.com)
  * @author John McGehee (http://johnnado.com)
