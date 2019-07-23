@@ -38,7 +38,7 @@
     </developers>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/sge-cloud-plugin.git</connection>
+        <connection>scm:git:ssh://github.com:jenkinsci/sge-cloud-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/sge-cloud-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/sge-cloud-plugin</url>
         <tag>sge-cloud-plugin-2.1</tag>
