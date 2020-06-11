@@ -28,7 +28,7 @@
         </license>
     </licenses>
 
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/SGE+Cloud+Plugin</url>
+    <url>https://github.com/jenkinsci/sge-cloud-plugin</url>
     <developers>
         <developer>
             <id>jmcgeheeiv</id>
