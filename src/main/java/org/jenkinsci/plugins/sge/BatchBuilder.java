@@ -2,7 +2,7 @@
  * The MIT License
  *
  * Copyright 2015 Laisvydas Skurevicius.
- * Copyright 2019 Wave Computing, John MdVehee
+ * Copyright 2019 Wave Computing, John McGehee
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
