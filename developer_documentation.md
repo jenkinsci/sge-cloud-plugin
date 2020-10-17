@@ -65,11 +65,11 @@ This is an abstract class, all of its methods are abstract, and it represents al
 ### SGE.java
 This class extends the `BatchSystem` class and implements all of its methods. The `BatchSystem` methods are implemented using the actions and commands specific to `SGE` batch system. The interaction with `SGE` is realized through execution of shell commands and extraction of needed information from the output of the commands.
 ### SGESlave.java
-This class represents the slave created by the cloud when a job with the appropriate label is run. It extends the `Slave` class which has most of its functionality. There is not much in the extended class.  The most important part of this extended class is the constructor which chooses the connection to the slave method (`SSHLauncher`), and the retention strategy (`SGERetentionStrategy`), it also sets the label which specifies which jobs the slave will be able to execute.
+This class represents the agent created by the cloud when a job with the appropriate label is run. It extends the `Slave` class which has most of its functionality. There is not much in the extended class.  The most important part of this extended class is the constructor which chooses the connection method (`SSHLauncher`), and the retention strategy (`SGERetentionStrategy`), it also sets the label which specifies which jobs the agent will be able to execute.
 ### SGERetentionStrategy.java
-This class determines when an idle slave (a slave who isn't doing any job) should be terminated (disconnected). It also takes care of terminating offline slaves. So it is a class which checks all slave computer status and determines if they should be terminated.
+This class determines when an idle agent (an agent that isn't doing any job) should be terminated (disconnected). It also takes care of terminating offline agents. So it is a class which checks all agent computer statuses and determines if they should be terminated.
 ### SGECloud.java
-This class checks job labels and determines if a slave should be created. If the label matches the cloud's label the cloud creates a new slave and initiates its connection to the computer through SSH by giving it the credentials which are provided by the user when creating the cloud.
+This class checks job labels and determines if an agent should be created. If the label matches the cloud's label the cloud creates a new agent and initiates its connection to the computer through SSH by giving it the credentials which are provided by the user when creating the cloud.
 
 The configuration section interface for this cloud is generated from `SGECloud/config.jelly`.
 ### SGEBuilder.java
