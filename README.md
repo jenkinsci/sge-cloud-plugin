@@ -183,15 +183,15 @@ Exit status above 128 indicates that a signal terminated the job.  See
 
 Each project has a *Workspace* button that you can use to view the
 project workspace files in your web browser.  This handy feature relies
-on the slave that executed the job.  SGE slaves are reused and if kept
-busy they can live a long and productive life.  However, slaves left
-idle for an extended time are deleted.  Once the slave is gone, the
+on the agent that executed the job.  SGE agents are reused and if kept
+busy they can live a long and productive life.  However, agents left
+idle for an extended time are deleted.  Once the agent is gone, the
 *Workspace* button will no longer work.  Then the files can only be
 viewed using other methods like the command line.
 
 In J*enkins \> Manage Jenkins \> Configure System \> SGE Cloud*, the
-*Maximum idle time* field controls how long idle slaves are retained.
- If you find that slaves disappear while you still want to view the
+*Maximum idle time* field controls how long idle agents are retained.
+ If you find that agents disappear while you still want to view the
 workspace, increase *Maximum idle time*.
 
 ## Environment Variables
